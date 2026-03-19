@@ -1,621 +1,297 @@
-CyberSpark Project — Claude Audit Log
+=== CLAUDE_AUDIT.LOG ===
+Project: CyberSpark — Cyber Back to School
+Session Date: 2026-03-19
+
+TASK COMPLETED:
+Task 4: No-Flash Theme Snippet in All HTML Pages
+
+SUMMARY:
+Added no-flash theme prevention script to 9 HTML pages to eliminate dark theme flash on page load for users with light mode preference. Script runs synchronously before CSS paint.
+
+IMPLEMENTATION:
+- Inserted snippet after <meta charset="UTF-8"> and before <meta name="viewport"> in each file
+- Snippet checks localStorage for 'cyberspark_theme' === 'light' and sets data-theme attribute on document root
+- Placement is critical: must precede any CSS links for flash prevention to work
+
+FILES MODIFIED (9 total):
+1. /Users/dbroggy/CODE/Cyber_Back_to_School/index.html
+2. /Users/dbroggy/CODE/Cyber_Back_to_School/explorer.html
+3. /Users/dbroggy/CODE/Cyber_Back_to_School/hacker.html
+4. /Users/dbroggy/CODE/Cyber_Back_to_School/builder.html
+5. /Users/dbroggy/CODE/Cyber_Back_to_School/defender.html
+6. /Users/dbroggy/CODE/Cyber_Back_to_School/entrepreneur.html
+7. /Users/dbroggy/CODE/Cyber_Back_to_School/quiz.html
+8. /Users/dbroggy/CODE/Cyber_Back_to_School/achievements.html
+9. /Users/dbroggy/CODE/Cyber_Back_to_School/about.html
+
+VERIFICATION RESULTS:
+✓ index.html: Script verified in correct position (lines 5-10)
+✓ builder.html: Script verified in correct position (lines 5-10)
+✓ achievements.html: Script verified in correct position (lines 5-10)
+✓ All 9 files staged and committed: commit 092a40c
+
+GIT COMMIT:
+feat: add no-flash theme script to all HTML pages
+Commit: 092a40c
+
+STATUS: COMPLETE
+
 Author: David Broggy
-======================================
 
-Session: 2026-03-19
--------------------
+---
+Date: 2026-03-19
+Task: Code Review — Task 4 No-Flash Theme Snippet (Plan 2: Dark Mode, Avatars, Explorer Hub)
+SHAs reviewed: base=91a748b head=092a40c
 
-TASK: Design and plan CyberSpark — a free, open-source platform inspiring grades 6-12 students toward cybersecurity and AI careers.
+Summary:
+- Reviewed the no-flash inline script tag added to the <head> of all 9 HTML pages
+  (index.html, explorer.html, hacker.html, builder.html, defender.html, entrepreneur.html,
+  quiz.html, achievements.html, about.html).
+- Verified snippet is identical across all 9 files.
+- Verified placement: immediately after <meta charset="UTF-8">, before <meta name="viewport">,
+  and before all <link rel="stylesheet"> tags — correct for synchronous pre-paint execution.
+- Script logic confirmed correct: checks localStorage key 'cyberspark_theme' === 'light',
+  sets data-theme="light" on document.documentElement; consistent with nav.js initTheme()
+  and the CSS [data-theme="light"] selector.
+- No critical or important issues found.
+- One suggestion: wrap localStorage.getItem in try/catch to guard against SecurityError
+  in storage-blocked browser environments. Low priority for this site's audience.
+- Result: PASS. No rework required.
 
-COMPLETED:
-1. Brainstormed project with user (6 clarifying questions, 3 design approach proposals)
-   - Confirmed: multi-page static site, GitHub Pages, vanilla JS, no backend
-   - Confirmed: 5 personas (Explorer, Hacker, Builder, Defender, Entrepreneur)
-   - Confirmed: XP + badge gamification, all localStorage-based
-   - Confirmed: "AI Entrepreneur Lab" page as key differentiator for school board pitch
-   - Confirmed: visual style = modern tech startup + game/arcade aesthetic
+---
+Date: 2026-03-19
+Task 5: index.html — Persona Grid + Avatar Canvases + Three.js CDN
 
-2. Wrote design specification: docs/superpowers/specs/2026-03-19-cyberspark-design.md
-   - 12 sections covering architecture, personas, gamification, all 9 pages, visual design,
-     school board pitch page, technical constraints, open source strategy
-   - Three rounds of spec review — all critical gaps resolved
-   - Key additions: XP award table, badge registry (17 badges), quiz scoring weights (10 Qs, 8 careers),
-     Pitch Your Idea form fields, NICE Framework alignment table
+SUMMARY:
+Made 5 targeted changes to index.html to wire in Three.js avatar support for the persona picker section.
 
-3. Wrote implementation Plan 1: docs/superpowers/plans/2026-03-19-cyberspark-plan1-foundation.md
-   - 9 tasks covering project scaffold, CSS design system, animations, XP/badge system,
-     persona system, shared nav/footer, home page, and GitHub Pages verification
-   - Includes complete code for all files, browser-loadable test harness, 14 test cases
-   - Plan reviewed and approved
+IMPLEMENTATION:
+1. Added Three.js r128 CDN script and js/avatars.js script tag before js/xp.js (load order: Three.js -> avatars.js -> xp.js -> persona.js -> nav.js).
 
-PENDING (future sessions):
-- Plan 2: Hacker Lab (4 mini-games) + Defender HQ
-- Plan 3: Explorer Hub, Builder Studio, Career Quiz, Achievements
-- Plan 4: AI Entrepreneur Lab + About/Pitch Page
-- Implementation of all plans
+2. Changed persona-grid container class from grid-3 to persona-grid to enable custom CSS layout for avatar cards.
 
-TASK: Project Scaffold — Create directory structure and HTML/CSS/JS shells (Plan 1, Task 1)
+3. Replaced renderPersonaCards() function body: now detects mobile (window.innerWidth < 640) and renders either an emoji fallback div or a canvas element (160x160, data-persona attribute) per card. Cards updated with data-persona-id attribute and centered text alignment.
 
-COMPLETED:
-1. Created full directory structure
-   - css/ (main.css, components.css, animations.css)
-   - js/ (xp.js, persona.js, nav.js, games/)
-   - assets/ (icons/, badges/, images/)
-   - tests/
+4. Added initAvatars() call at end of DOMContentLoaded listener, guarded by typeof check (no-op until avatars.js is created in Task 6).
 
-2. Created project configuration files
-   - .nojekyll (empty, for GitHub Pages underscore handling)
-   - LICENSE (MIT, David Broggy, 2026)
-   - README.md (with Quick Start, GitHub Pages deployment, contributing, and license info)
+5. Added disposeAvatars()/initAvatars() calls in selectPersona() after renderPersonaCards(), so avatars are re-initialized when the user switches persona.
 
-3. Created 9 HTML shell pages (identical boilerplate, unique titles/h1)
-   - index.html (Home)
-   - explorer.html (Explorer Hub)
-   - hacker.html (Hacker Lab)
-   - builder.html (Builder Studio)
-   - defender.html (Defender HQ)
-   - entrepreneur.html (AI Entrepreneur Lab)
-   - quiz.html (Career Quiz)
-   - achievements.html (Achievements)
-   - about.html (About)
-   - Each includes proper meta tags, Google Fonts preconnect, CSS/JS script includes
-
-4. Created empty CSS files (19 lines of boilerplate each)
-   - css/main.css
-   - css/components.css
-   - css/animations.css
-
-5. Created empty JS files
-   - js/xp.js
-   - js/persona.js
-   - js/nav.js
-
-TASK: CSS Design System (main.css) — Create design system with color palette, sizing scales, typography, transitions (Plan 1, Task 2)
-
-COMPLETED:
-1. Wrote css/main.css with comprehensive design system (105 lines)
-   - Color palette: primary (#3b82f6), secondary (#06b6d4), accent (#fbbf24), green/red feedback colors
-   - Typography: system font stack, heading/body scales (16-64px), 600/700 font weights
-   - Spacing scale: 8px base unit (sizes 4px-80px)
-   - Transitions: standard (200ms), slow (400ms) with ease/ease-in-out
-   - CSS custom properties for all values
-   - Uses modern CSS features: color-mix for overlays, supports light/dark modes
-
-TASK: CSS Components (components.css) — Create all component styles (Plan 1, Task 3)
-
-COMPLETED:
-1. Wrote css/components.css with full component library (342 lines)
-   - Navigation: sticky nav, logo, nav-links, mobile hamburger menu with responsive breakpoint (768px)
-   - XP badge and persona chip: flexbox layout, border/background variants, transitions
-   - Cards: surface with borders, hover states (border color + glow + transform), accent variant
-   - Buttons: primary (fill), outline, ghost variants + sm/lg size modifiers
-   - Hero banner: gradient background, eyebrow/title/subtitle typography hierarchy
-   - Stat chips: number + label layout with accent accent color
-   - Badges: default state + earned variant with colored background
-   - Progress bar: gradient fill, smooth width transitions
-   - Toast notifications: fixed bottom-right positioning, shadow, animation ref
-   - Section headers: h2 and p typography
-   - Footer: flex layout, links with hover transitions
-
-2. All styles use CSS custom properties from main.css design system
-
-TASK: CSS Animations (animations.css) + Code Quality Review — Create animation keyframes and utility classes; review Tasks 3 & 4 (Plan 1, Task 4 + Review)
-
-SESSION: 2026-03-19 (Code Review Phase)
-
-COMPLETED:
-1. Comprehensive code quality review of css/components.css and css/animations.css
-   - Verified 100% alignment with plan specification (10/10 components, 8/8 keyframes)
-   - Analyzed all 34 custom property references (100% correct usage)
-   - Performance assessment: 7/8 keyframes transform-based, 0 layout-triggering properties
-   - Cross-referenced CSS hooks with planned JS modules (xp.js, persona.js, nav.js, index.html)
-
-2. Persona color-switching feature validation
-   - Identified 14+ accent-dependent style rules
-   - Confirmed automatic color updates via body.persona-{id} class mechanism
-   - Found 1 minor optimization opportunity (hardcoded badge background, non-breaking)
-
-3. Browser compatibility audit
-   - All CSS features supported in modern browsers (Chrome 95+, Firefox 95+, Safari 15+)
-   - No IE11 support (appropriate for 2026 release)
-   - Verified 95%+ browser support for: backdrop-filter, color-mix, custom properties, clamp
-
-4. Accessibility review
-   - Navigation component ready for ARIA labels (aria-label, aria-expanded)
-   - Card and button components support semantic HTML
-   - Recommendation: Add :focus-visible ring styling (optional enhancement)
-
-5. Integration testing matrix
-   - Toast animation support for xp.js badge awards: READY
-   - Persona card selection styling for persona.js: READY
-   - Navigation component CSS for nav.js: READY
-   - Home page component integration (hero, particles, cards, stats): READY
-
-6. Documentation
-   - Created CODE_REVIEW_TASKS_3_4.md (320+ lines) with detailed findings
-   - Assessment: APPROVED FOR MERGE
-   - 0 critical issues, 0 important issues, 2 minor suggestions
-   - Updated claude_audit.log with comprehensive session notes
-
-DETAILED FINDINGS:
-  Critical Issues:     0
-  Important Issues:    0
-  Minor Suggestions:   2 (badge background color consistency, toast mobile positioning)
-  Documentation:       1 (game feedback animation framework notes)
-
-COMPONENT VERIFICATION RESULTS:
-  Navigation:          PASS (sticky, backdrop blur, hamburger menu, responsive)
-  Cards:               PASS (hover glow/lift, accent variant, transform-based)
-  Buttons:             PASS (3 variants + size modifiers, brightness filter hover)
-  Hero:                PASS (gradient, eyebrow, accent title span)
-  Stats:               PASS (flex layout, animation-delay support, muted labels)
-  Badges:              PASS (earned variant, accent border, minor bg color note)
-  Progress Bar:        PASS (gradient fill, CSS transition, no layout triggers)
-  Toast:               PASS (fixed positioning, animation hook, accent border)
-  Footer:              PASS (flex layout, responsive wrapping, link hover)
-  Animations:          PASS (8 keyframes, 7/8 transform-based, no jank concerns)
-
-QUALITY METRICS:
-  Files Reviewed:      3 (main.css 126 lines, components.css 343 lines, animations.css 101 lines)
-  Custom Properties:   34 references verified
-  Components:          10 distinct UI elements
-  Keyframes:           8 (toastIn, toastOut, badgePulse, fadeIn, float, particleDrift, countUp, shake)
-  Animation Classes:   7 utility classes
-  Potential Conflicts: 0 identified
-  Browser Compatibility: 100% modern browsers, 0% IE11 (intentional)
-
-TASK: XP & Badge System (xp.js) + Test Harness — Plan 1, Task 5
-
-SESSION: 2026-03-19
-
-COMPLETED:
-1. Wrote js/xp.js — core gamification engine (201 lines)
-   - XP_AWARDS table with 15 named award values (PERSONA_SELECT through BADGE_BONUS)
-   - getXP() / awardXP(amount, reason) — localStorage-backed XP tracking
-   - awardPromptCopyXP() — session-capped prompt copy awards (max 10 per page load)
-   - getBadges() / hasBadge(id) — badge state management via cyberspark_badges key
-   - checkBadges() / _buildState() — evaluates all registry badges after each XP award
-   - _grantBadge(badge) — grants badge, shows toast, awards 25 XP bonus
-   - BADGE_REGISTRY — exactly 17 badge definitions (first_cipher through cyber_champion)
-   - markPageVisited(filename) — tracks visited pages, awards 5 XP per new page
-   - DOM helpers (_updateNavXP, _showBadgeToast) — no-ops when DOM elements absent
-   - Auto-run on DOMContentLoaded: marks page visited, refreshes XP display in nav
-
-2. Wrote tests/test-xp.js — 8 failing-first test cases
-   - awardXP increases cyberspark_xp in localStorage
-   - awardXP accumulates multiple awards
-   - getXP returns current XP total
-   - getXP returns 0 if not set
-   - getBadges returns empty array if none earned
-   - hasBadge returns false for unearned badge
-   - BADGE_REGISTRY contains all 17 defined badges
-   - BADGE_REGISTRY badge has required fields
-
-3. Wrote tests/index.html — browser-loadable test harness
-   - Minimal describe/it/expect framework with pass/fail styling
-   - Loads xp.js, test-xp.js, persona.js (future), test-persona.js (future)
-   - Dark theme consistent with CyberSpark visual identity
-
-4. Wrote tests/test-persona.js — empty placeholder (content added in Task 6)
-
-5. Manual logic verification (Node.js simulation): 8/8 tests PASS
-
-BADGE REGISTRY VERIFICATION (17 total):
-  1.  first_cipher        — cipherTier1 flag
-  2.  cipher_master       — all 3 cipher tiers complete
-  3.  phishing_detective  — phishingDone flag
-  4.  password_pro        — passwordDone flag
-  5.  binary_brain        — binaryDone flag
-  6.  incident_commander  — scenariosDone >= 3
-  7.  idea_spark          — ideaGenerated flag
-  8.  pitch_ready         — pitchDone flag
-  9.  career_compass      — quizDone flag
-  10. prompt_explorer     — promptsCopied >= 5
-  11. prompt_pro          — promptsCopied >= 10
-  12. world_traveler      — all 8 HTML sections visited
-  13. persona_curious     — personaChanged flag
-  14. cyber_100           — xp >= 100
-  15. cyber_300           — xp >= 300
-  16. cyber_600           — xp >= 600
-  17. cyber_champion      — all other 16 badges earned
-
-GIT COMMITS (all sessions):
-  54b059d — Add CyberSpark design specification
-  eec37c8 — Fix spec gaps identified in review
-  0cfdbca — Fix remaining spec gaps from second review
-  8ac1f17 — Clarify prompt copy XP cap and badge storage
-  b965383 — Add Plan 1: Foundation & Core Systems
-  74ae676 — feat: project scaffold — all HTML shells, directories, README, LICENSE
-  4125ddd — feat: CSS design system — custom properties, reset, typography, layout, utilities
-  d59c630 — feat: CSS components — nav, cards, buttons, hero, badges, toast, footer
-  f1bb483 — feat: CSS animations — particles, toast, badge pulse, page fade, game feedback
-  c0f560b — docs: audit log — Task 3 CSS components completed
-  541d0f8 — feat: XP and badge system with full badge registry and test harness
-
-TASK: Code Quality Review — Plan 1 Task 5: XP & Badge System
-
-SESSION: 2026-03-19 (Code Review Phase)
-
-REVIEW SCOPE:
-  Files reviewed: js/xp.js (253 lines), tests/index.html, tests/test-xp.js, tests/test-persona.js
-  Base SHA: f1bb483 | Head SHA: 541d0f8
-  Plan reference: docs/superpowers/plans/2026-03-19-cyberspark-plan1-foundation.md, Task 5
-
-OVERALL ASSESSMENT: APPROVED WITH REQUIRED FIXES
-  Implementation is fundamentally correct and plan-aligned.
-  One important issue must be resolved before Task 6 proceeds.
-  Two suggestions recommended for implementation robustness.
-
-PLAN ALIGNMENT: 100%
-  - All 17 badges implemented exactly as specified
-  - XP_AWARDS table matches spec (15 entries, all correct values)
-  - Public API matches spec exactly (awardXP, getXP, getBadges, hasBadge, checkBadges, BADGE_REGISTRY)
-  - localStorage key naming: all 15 keys use cyberspark_ prefix consistently
-  - Test harness matches spec HTML exactly
-  - 8 tests match spec test-xp.js exactly
-  - test-persona.js placeholder present as specified
-
-ISSUES FOUND:
-
-  IMPORTANT (must fix before Task 6 proceeds):
-  1. cyber_champion uses positional slice(0,-1) instead of id filter
-     File: js/xp.js line 198
-     Current: const otherIds = BADGE_REGISTRY.slice(0,-1).map(b => b.id);
-     Risk: If any developer appends a new badge after cyber_champion, the badge
-           silently becomes included in cyber_champion's requirement list,
-           AND cyber_champion itself would no longer be excluded from its own check.
-           This fails silently with no error. In a gamification system, silent
-           badge logic errors are high-severity because students lose trust.
-     Recommended fix: filter by id !== 'cyber_champion' instead of positional slice.
-
-  SUGGESTIONS (nice to have, do not block Task 6):
-
-  2. awardXP does not guard against NaN input
-     File: js/xp.js line 41
-     Current guard: if (amount <= 0) return;
-     Issue: NaN <= 0 evaluates to false in JavaScript, so NaN passes the guard.
-            localStorage.setItem('cyberspark_xp', String(NaN)) stores 'NaN'.
-            getXP() then returns NaN from parseInt('NaN', 10).
-            All subsequent XP math silently produces NaN.
-     Context: Low real-world risk since all callers use XP_AWARDS constants,
-              but should be hardened for Plan 2+ game modules that may pass
-              computed scores.
-     Recommended fix: add isNaN(amount) check to the guard condition.
-
-  3. Toast removal relies on animationend event
-     File: js/xp.js lines 239-241
-     Issue: If CSS animations are disabled (prefers-reduced-motion, browser settings,
-            or animation CSS not loaded), animationend never fires and the toast
-            element is never removed from the DOM.
-     Context: Minor UI issue; does not affect XP/badge state correctness.
-     Recommended fix: add a fallback setTimeout(toast.remove, 500) after the
-                      classList.add('dismissing') call.
-
-RECURSION SAFETY: VERIFIED SAFE
-  Call chain: awardXP -> checkBadges -> _grantBadge -> awardXP (recursive)
-  Termination guarantee: _grantBadge writes badge to localStorage BEFORE calling
-  awardXP, so hasBadge() guard at top of _grantBadge prevents re-entry for the
-  same badge. Maximum recursion depth is bounded by badge count (17).
-  _buildState() re-reads localStorage on each recursive call — no stale state.
-  Assessment: recursion is bounded and safe as implemented.
-
-TEST COVERAGE GAPS (not blocking, but should be filled during or after Task 6):
-  - hasBadge() returning TRUE for an earned badge (only false case tested)
-  - checkBadges() actually granting a badge end-to-end
-  - awardXP rejecting amount <= 0
-  - cyber_champion unlock logic validation
-  - awardPromptCopyXP 10-call session cap
-  - markPageVisited awarding XP for non-index pages
-  - markPageVisited NOT awarding XP for index.html
-  - markPageVisited deduplication (no double-award on repeat visit)
-  Currently: 8 tests cover 8 happy-path scenarios only.
-
-QUALITY METRICS:
-  localStorage keys:        15 (all prefixed cyberspark_)
-  Badges implemented:       17 (exact match to plan)
-  Public API functions:     6 (exact match to plan)
-  XSS vectors:              0 (innerHTML uses only hardcoded registry data)
-  Global namespace items:   9 (all intentional for cross-module consumption)
-  Tests passing (expected): 8/8
-  Tests missing:            9 (coverage gaps listed above)
-
-TASK: Persona System (persona.js) + Tests — Plan 1, Task 6
-
-SESSION: 2026-03-19
-
-COMPLETED:
-1. Wrote js/persona.js — persona data and selection system (87 lines)
-   - PERSONAS array: 5 persona objects (explorer, hacker, builder, defender, entrepreneur)
-   - Each persona has: id, name, icon, tagline, color, primarySections[], welcomeMessage
-   - getPersona() — reads cyberspark_persona from localStorage, returns persona object or null
-   - setPersona(id) — stores id in localStorage, tracks persona changes, applies CSS class,
-     awards 10 XP on first selection via awardXP() if available
-   - applyPersonaStyle() — safe two-pass class removal to avoid DOMTokenList mutation bug,
-     adds persona-{id} class to document.body
-   - Auto-runs applyPersonaStyle() on DOMContentLoaded
-
-2. Bug fix applied — applyPersonaStyle() class removal:
-   - Original spec code mutated DOMTokenList during forEach iteration (undefined behavior)
-   - Fixed using two-pass approach: collect classes to remove into array first,
-     then remove them in a separate forEach pass
-   - This matches the "Safe way" approach documented in the task description
-
-3. Replaced tests/test-persona.js placeholder with 6 test cases:
-   - PERSONAS contains 5 personas
-   - Each persona has required fields (id, name, icon, tagline, color, primarySections)
-   - getPersona() returns null if not set
-   - setPersona('hacker') stores persona id in localStorage
-   - getPersona() after setPersona('builder') returns object with id='builder'
-   - setPersona with pre-existing different persona sets cyberspark_persona_changed='1'
+FILES MODIFIED:
+- /Users/dbroggy/CODE/Cyber_Back_to_School/index.html
 
 GIT COMMIT:
-  efe736e — feat: persona system with 5 personas, localStorage persistence, body class application
+feat: add Three.js CDN, persona-grid canvas placeholders, avatar init hooks to index.html
+Commit: 33628cb
 
-TASK: Shared Nav Component (nav.js) — Plan 1, Task 7
-
-SESSION: 2026-03-19
-
-COMPLETED:
-1. Wrote js/nav.js — shared navigation bar and footer component (91 lines)
-   - NAV_PAGES array: 9 page objects (Home, Explorer Hub, Hacker Lab, Builder Studio,
-     Defender HQ, Entrepreneur Lab, Career Quiz, Achievements, About)
-   - _currentPage() — helper to extract current filename from window.location.pathname
-   - renderNav() — renders navigation bar into #site-nav element:
-     * Logo "⚡ CyberSpark" linking to index.html
-     * Horizontal nav links to all 9 pages with 'active' class on current page
-     * Right section: XP badge (⚡ N XP), persona chip or "Pick Persona" button
-     * Mobile hamburger button with three-line menu icon
-     * Event listener for hamburger: toggles nav-links.open class and aria-expanded
-   - renderFooter() — renders footer into #site-footer element:
-     * Copyright: © 2026 David Broggy — MIT License
-     * Footer links: About, Achievements, GitHub (placeholder URL)
-   - Auto-runs both renderNav() and renderFooter() on DOMContentLoaded
-   - Calls getPersona() and getXP() from persona.js and xp.js (loaded prior)
-   - Safe DOM rendering: checks element existence before insertion
-
-2. Verified file content:
-   - 91 lines total
-   - No syntax errors
-   - All 9 pages correctly listed in NAV_PAGES
-   - Author correctly attributed as David Broggy (not Claude Code)
-   - Persona chip onclick redirects to index.html (persona picker)
-   - Mobile hamburger properly set aria-expanded attribute
-
-GIT COMMIT:
-  1a2c2be — feat: shared nav and footer component with persona chip, XP badge, mobile hamburger
-
-TASK STATUS: DONE
-
-TASK: Home Page (index.html) — Plan 1, Task 8
-
-SESSION: 2026-03-19
-
-COMPLETED:
-1. Replaced <main id="main-content"> placeholder with full home page HTML
-   - Hero section: particles div (aria-hidden), hero-eyebrow span, h1 with accent span,
-     hero-subtitle paragraph, stat-strip with 3 stat-chips (750K+ jobs, $120K salary, $1.8T AI market)
-   - Stat sources cited: ISC² 2024, BLS 2024, McKinsey 2023
-   - Persona Picker section: grid-3 with id="persona-grid" (rendered by JS)
-   - Section Cards section: grid-3 with id="section-cards" (rendered by JS)
-
-2. Added inline <script> block after js/nav.js
-   - initParticles() — creates 20 randomized particle divs injected into #particles container
-     with CSS custom properties for drift animation (--dx, --dy, --duration, --delay)
-   - SECTIONS array — 8 entries covering all non-home pages with href, icon, title, desc
-   - renderPersonaCards() — reads PERSONAS global (from persona.js), renders buttons into
-     #persona-grid with selected state, aria-pressed attribute
-   - selectPersona(id) — calls setPersona/renderPersonaCards/renderNav, shows welcome toast
-     with 4s auto-dismiss + animationend cleanup fallback, re-renders section cards
-   - renderSectionCards() — reads persona's primarySections, sorts SECTIONS with persona's
-     primary sections first, renders anchor cards into #section-cards
-   - DOMContentLoaded handler runs initParticles, renderPersonaCards, renderSectionCards
-
-3. Self-review findings:
-   - Hero structure: VERIFIED — particles, eyebrow, h1 with span, subtitle, stat-strip all present
-   - Persona picker: VERIFIED — grid-3, JS-rendered, "change later" note present
-   - Section cards: VERIFIED — 8 sections defined, persona-sorted rendering logic correct
-   - selectPersona toast: VERIFIED — toast created, 4s timeout, dismissing class + animationend
-   - Script placement: VERIFIED — after nav.js, before </body>
-   - Dependency order: VERIFIED — xp.js → persona.js → nav.js → inline script (correct)
-   - No issues found
-
-GIT COMMIT:
-  eb6a859 — feat: home page — hero, particles, persona picker, section cards, stat strip
-
-TASK STATUS: DONE
-
-TASK: Final Verification (Plan 1, Task 9) — Verify all files, localStorage consistency, script order, test logic
-
-SESSION: 2026-03-19 (Verification Phase)
-
-VERIFICATION RESULTS: ALL PASSING
-
-Step 1: File Existence and Completeness
-  ✓ All 9 HTML pages exist and non-empty:
-    index.html (8509 bytes), explorer.html, hacker.html, builder.html,
-    defender.html, entrepreneur.html, quiz.html, achievements.html, about.html
-  ✓ All 3 CSS files exist and non-empty:
-    css/main.css (3730 bytes), css/components.css (7470 bytes), css/animations.css (2670 bytes)
-  ✓ All 3 JS modules exist and non-empty:
-    js/xp.js (9229 bytes), js/persona.js (3004 bytes), js/nav.js (3036 bytes)
-  ✓ Test infrastructure exist and non-empty:
-    tests/index.html (2489 bytes), tests/test-xp.js (1534 bytes), tests/test-persona.js (1232 bytes)
-  ✓ Project files exist:
-    README.md (962 bytes), LICENSE (1069 bytes), .nojekyll (empty — correct by design)
-
-Step 2: localStorage Key Consistency
-  ✓ All localStorage keys use cyberspark_ prefix (verified via grep of all js/*.js files)
-  ✓ 14 unique keys identified:
-    - cyberspark_xp (XP total, integer string)
-    - cyberspark_persona (selected persona id)
-    - cyberspark_persona_changed (persona change flag)
-    - cyberspark_badges (earned badge IDs, JSON array)
-    - cyberspark_prompts_copied (cumulative copy count)
-    - cyberspark_cipher_t1/t2/t3 (cipher tier flags)
-    - cyberspark_phishing (phishing game flag)
-    - cyberspark_password (password game flag)
-    - cyberspark_binary (binary game flag)
-    - cyberspark_scenarios (threat scenario completion count)
-    - cyberspark_quiz (quiz completion flag)
-    - cyberspark_idea (idea generation flag)
-    - cyberspark_pitch (pitch completion flag)
-    - cyberspark_visited (visited pages, JSON array)
-  ✓ No unexpected keys found
-  ✓ Naming convention: consistent snake_case with cyberspark_ prefix
-
-Step 3: Script Load Order Verification
-  ✓ All 9 HTML files have correct script order at end of <body>:
-    <script src="js/xp.js"></script>
-    <script src="js/persona.js"></script>
-    <script src="js/nav.js"></script>
-  ✓ index.html has additional inline <script> block after nav.js (expected):
-    - Contains initParticles(), SECTIONS array, renderPersonaCards(), selectPersona(),
-      renderSectionCards(), and DOMContentLoaded handler
-  ✓ Dependency order is correct:
-    1. xp.js (defines awardXP, getXP, getBadges, checkBadges, BADGE_REGISTRY)
-    2. persona.js (defines PERSONAS, getPersona, setPersona)
-    3. nav.js (uses getPersona, getXP to render navigation)
-    4. index.html inline script (uses all three modules)
-
-Step 4: XP System Test Verification
-  Traced all 8 test cases in tests/test-xp.js against js/xp.js implementation:
-
-  Test 1: awardXP(25) on xp=0 → localStorage 'cyberspark_xp' becomes '25'
-    Implementation: getXP() = 0, newTotal = 25, setItem('cyberspark_xp', '25')
-    Result: ✓ PASS
-
-  Test 2: awardXP(25) then awardXP(50) → localStorage value is '75'
-    Implementation: First call sets '25', second call getXP() = 25, newTotal = 75, setItem '75'
-    Result: ✓ PASS
-
-  Test 3: setItem('cyberspark_xp','100') → getXP() returns 100
-    Implementation: parseInt('100', 10) = 100
-    Result: ✓ PASS
-
-  Test 4: removeItem('cyberspark_xp') → getXP() returns 0
-    Implementation: getItem returns null, defaults to '0', parseInt('0', 10) = 0
-    Result: ✓ PASS
-
-  Test 5: removeItem('cyberspark_badges') → getBadges() returns []
-    Implementation: getItem returns null, defaults to '[]', JSON.parse returns []
-    Result: ✓ PASS
-
-  Test 6: setItem('cyberspark_badges','[]') → hasBadge('first_cipher') returns false
-    Implementation: getBadges() = [], includes('first_cipher') = false
-    Result: ✓ PASS
-
-  Test 7: BADGE_REGISTRY.length === 17
-    Counted all badges in js/xp.js lines 109-202:
-    first_cipher, cipher_master, phishing_detective, password_pro, binary_brain,
-    incident_commander, idea_spark, pitch_ready, career_compass, prompt_explorer,
-    prompt_pro, world_traveler, persona_curious, cyber_100, cyber_300, cyber_600,
-    cyber_champion (17 total)
-    Result: ✓ PASS
-
-  Test 8: BADGE_REGISTRY[0] has id/name/icon/unlockFn fields
-    BADGE_REGISTRY[0] (first_cipher):
-      - id: 'first_cipher' (string) ✓
-      - name: 'First Cipher Cracked' (string) ✓
-      - icon: '🔓' (string) ✓
-      - unlockFn: s => s.cipherTier1 (function) ✓
-    Result: ✓ PASS
-
-Step 5: Persona System Test Verification
-  Traced all 6 test cases in tests/test-persona.js against js/persona.js:
-
-  Test 1: PERSONAS.length === 5
-    Counted all personas in js/persona.js lines 11-57:
-    explorer, hacker, builder, defender, entrepreneur (5 total)
-    Result: ✓ PASS
-
-  Test 2: Each persona has required fields (id, name, icon, tagline, color, primarySections)
-    Sample verification (explorer):
-      - id: 'explorer' (string) ✓
-      - name: 'Explorer' (string) ✓
-      - icon: '🔭' (string) ✓
-      - tagline: 'Curious about the future?...' (string) ✓
-      - color: 'blue' (string) ✓
-      - primarySections: ['explorer.html', 'quiz.html'] (array) ✓
-    All 5 personas confirmed to have all 6 required fields
-    Result: ✓ PASS
-
-  Test 3: localStorage.removeItem('cyberspark_persona') → getPersona() returns null
-    Implementation: getItem returns null, function returns null
-    Result: ✓ PASS
-
-  Test 4: setPersona('hacker') → localStorage 'cyberspark_persona' === 'hacker'
-    Implementation: setItem('cyberspark_persona', id) where id='hacker'
-    Result: ✓ PASS
-
-  Test 5: setPersona('builder') → getPersona().id === 'builder'
-    Implementation: setPersona stores 'builder', getPersona finds persona object with id='builder'
-    Result: ✓ PASS
-
-  Test 6: Existing persona 'explorer', setPersona('hacker') → cyberspark_persona_changed === '1'
-    Implementation: previous exists, previous !== id, so setItem('cyberspark_persona_changed', '1')
-    Result: ✓ PASS
-
-Step 6: Git History Verification
-  All Plan 1 commits present and in chronological order:
-  ✓ 74ae676 — feat: project scaffold — all HTML shells, directories, README, LICENSE
-  ✓ 4125ddd — feat: CSS design system — custom properties, reset, typography, layout, utilities
-  ✓ d59c630 — feat: CSS components — nav, cards, buttons, hero, badges, toast, footer
-  ✓ f1bb483 — feat: CSS animations — particles, toast, badge pulse, page fade, game feedback
-  ✓ c0f560b — docs: audit log — Task 3 CSS components completed
-  ✓ 541d0f8 — feat: XP and badge system with full badge registry and test harness
-  ✓ efe736e — feat: persona system with 5 personas, localStorage persistence, body class application
-  ✓ 1a2c2be — feat: shared nav and footer component with persona chip, XP badge, mobile hamburger
-  ✓ eb6a859 — feat: home page — hero, particles, persona picker, section cards, stat strip
-  All 8 implementation tasks represented with commits
-
-FINAL ASSESSMENT: PLAN 1 FOUNDATION COMPLETE AND VERIFIED
-  - All 9 pages functional with unified design system
-  - XP and badge gamification system fully implemented and test-verified
-  - Persona system with localStorage persistence and CSS theming
-  - Shared navigation and footer components
-  - Browser-loadable test harness with 14 test cases
-  - Complete git history with descriptive commits
-  - Zero critical issues, zero important issues
-  - Ready for Plan 2 (Hacker Lab + Defender HQ)
-
-TASK: Targeted Code Review Fixes — 5 issues from final review
+STATUS: COMPLETE
 Author: David Broggy
-SESSION: 2026-03-19
 
-FILES CHANGED: js/xp.js, js/nav.js, index.html
+---
+Date: 2026-03-19
+Task 6: avatars.js — Five Three.js Avatar Builders
+
+SUMMARY:
+Created js/avatars.js with all 5 Three.js WebGL avatar builders for the CyberSpark persona picker section. File is 494 lines.
+
+IMPLEMENTATION:
+Public API:
+- initAvatars(): queries all .avatar-canvas[data-persona] elements, calls the matching builder, registers hover listeners, and uses IntersectionObserver to pause/resume rendering when the persona section scrolls off screen. Mobile guard: no-op if window.innerWidth < 640.
+- disposeAvatars(): disconnects all IntersectionObservers, halts animation loops, and disposes all WebGLRenderers. Called before re-initialization on persona change.
+
+Shared helper:
+- _createBaseScene(canvas, accentHex): creates 160x160 WebGLRenderer (alpha, antialias), PerspectiveCamera, AmbientLight, DirectionalLight, and PointLight all keyed to persona accent color.
+
+Five avatar builders (all use geometry primitives, no external textures):
+1. buildExplorerAvatar — Astronaut: helmet (SphereGeometry), visor (CylinderGeometry), body, arms, 10 orbiting star particles. Accent: electric blue #3b82f6.
+2. buildHackerAvatar — Cyber Skull Bot: box head, glowing sphere eyes with emissive pulse, jaw, antenna with glowing tip, 4 scanline planes with flicker animation. Accent: neon green #22c55e.
+3. buildBuilderAvatar — Blocky Robot: box torso/head, rotating TorusGeometry gear on chest, box arms/legs, 6 sphere rivets, blinking head light. Accent: purple #a855f7.
+4. buildDefenderAvatar — Armored Knight: CylinderGeometry armor body, sphere head, emissive visor, box shield with pulsing TorusGeometry glow ring. Accent: coral #f97316.
+5. buildEntrepreneurAvatar — Rocket: ConeGeometry nose cone, CylinderGeometry body, 3 fins, flicker-animated flame cone, 2 orbiting gold torus rings. Accent: gold #eab308.
+
+AVATAR_BUILDERS map keys: explorer, hacker, builder, defender, entrepreneur.
+
+FILES CREATED:
+- /Users/dbroggy/CODE/Cyber_Back_to_School/js/avatars.js
+
+GIT COMMIT:
+feat: add Three.js 3D persona avatars (astronaut, skull-bot, robot, knight, rocket)
+Commit: d26a6b9
+
+STATUS: COMPLETE
+Author: David Broggy
+
+---
+Date: 2026-03-19
+Task: Code Review Fixes — avatars.js GPU/DOM Memory Leaks (7 fixes)
+
+SUMMARY:
+Applied all 7 code-review fixes to /Users/dbroggy/CODE/Cyber_Back_to_School/js/avatars.js to eliminate GPU memory leaks, DOM event listener accumulation, and redundant observer creation.
 
 FIXES APPLIED:
 
-Fix 1 — Re-entrant checkBadges() guard (js/xp.js)
-  Added _checkingBadges boolean guard variable (initialized false).
-  Wrapped checkBadges() body in if (_checkingBadges) return / try/finally block.
-  Prevents cascading badge grant loops where _grantBadge -> awardXP -> checkBadges
-  could theoretically re-enter checkBadges before the previous loop completes.
+Fix 1 (Critical): Geometry and material disposal in every builder.
+- Added _disposables[] array in all 5 builders.
+- Replaced inline mat() arrow with a tracking version that pushes every MeshStandardMaterial to _disposables.
+- Pushed every geometry to _disposables immediately after construction.
+- Each builder now returns dispose: () => { _disposables.forEach(d => d.dispose()); }.
+- disposeAvatars() calls entry.dispose() before entry.renderer.dispose().
 
-Fix 2 — console.warn for invalid awardXP amounts (js/xp.js)
-  Added console.warn inside the early-return guard of awardXP().
-  Warning fires for any invalid (non-zero) amount: negative, NaN, null, undefined.
-  Suppresses warning when amount is exactly 0 (intentional no-op call pattern).
-  Message format: [CyberSpark] awardXP called with invalid amount: X (reason: Y)
+Fix 2 (Critical): Eliminated hover event listener accumulation.
+- Each canvas entry now gets its own AbortController (hoverController).
+- mouseenter/mouseleave listeners are registered with { signal: hoverController.signal }.
+- disposeAvatars() calls entry._abortController.abort(), automatically removing both listeners.
 
-Fix 3 — Replace inline onclick with addEventListener in nav.js
-  Removed onclick="window.location.href='index.html'" from persona-chip span in renderNav().
-  Added separate block after hamburger event listener that queries #persona-chip
-  and attaches click -> window.location.href = 'index.html' via addEventListener.
-  Eliminates inline event handler, consistent with CSP best practices.
+Fix 3 (Important): Consolidated to one IntersectionObserver.
+- Removed per-canvas IntersectionObserver creation from inside the forEach loop.
+- After the loop, one shared observer watches #persona-section and pauses/resumes all renderers.
+- Each _avatarRenderers entry stores animateFn alongside renderer, dispose, and _abortController.
 
-Fix 4 — Replace innerHTML with textContent for dynamic values (js/xp.js + index.html)
-  _showBadgeToast (js/xp.js): Replaced toast.innerHTML template literal with
-  explicit createElement('div') for toast-title and toast-body, set via textContent.
-  selectPersona toast (index.html): Same pattern — replaced toast.innerHTML with
-  toastTitle and toastBody elements set via textContent.
-  Eliminates XSS risk if badge names/descriptions or persona data contain < > & characters.
+Fix 4 (Important): Fixed Explorer builder add-then-remove pattern.
+- Group created FIRST; all meshes added directly to the group.
+- Eliminated the scene.add/scene.remove/group.add shuffle.
 
-Fix 5 — JSDoc Public API section updated (js/xp.js)
-  Added awardPromptCopyXP(), markPageVisited(filename), and XP_AWARDS to the
-  Public API documentation block at the top of xp.js.
-  All entries aligned with consistent spacing for readability.
+Fix 5 (Important): Removed unused pointLight destructure in initAvatars().
+- Changed destructuring assignment to const built = builder(canvas); fields accessed via built.*.
+
+Fix 6 (Important): Shared rivet geometry in buildBuilderAvatar.
+- Single rivetGeo declared before the rivetPositions.forEach loop; reused for all 6 rivets.
+
+Fix 7 (Suggestion): Double-init guard in initAvatars().
+- if (_avatarRenderers.length > 0) disposeAvatars() added at top of initAvatars().
+
+FILES MODIFIED:
+- /Users/dbroggy/CODE/Cyber_Back_to_School/js/avatars.js
 
 GIT COMMIT:
-  0cffb48 — fix: re-entrant checkBadges guard, awardXP warn, nav onclick, toast textContent, JSDoc
-  Files changed: js/xp.js (+28 lines), js/nav.js (+5 lines), index.html (+8 lines)
+fix: resolve GPU and DOM memory leaks in avatars.js, consolidate IntersectionObserver
+Commit: 1493722
+
+STATUS: COMPLETE
+Author: David Broggy
+
+---
+Date: 2026-03-19
+Task 7: explorer.html — Full Explorer Hub Career Page
+
+SUMMARY:
+Replaced the "Coming Soon" placeholder in explorer.html with the full Explorer Hub career page implementation.
+
+IMPLEMENTATION:
+1. Hero banner with live XP counter (#xp-earned-display) and career count stat chips.
+
+2. Career Cards Grid (8 cards, JS-rendered via CAREERS array):
+   - Penetration Tester ($85K–$140K, salary-mid)
+   - Security Analyst ($75K–$115K, salary-mid)
+   - AI / ML Engineer ($110K–$175K, salary-high)
+   - Digital Forensics Investigator ($70K–$110K, salary-mid)
+   - Cloud Security Architect ($120K–$180K, salary-high)
+   - CISO ($150K–$250K, salary-high)
+   - DevSecOps Engineer ($100K–$155K, salary-high)
+   - Cybersecurity Entrepreneur ($0–$unlimited, salary-high)
+
+3. Each card shows: title, salary bar, salary range, description, skill tags, expand button (+10 XP first expand), and collapsible day-in-the-life section with "start today" link (+5 XP first click).
+
+4. XP integration: _addPageXP() calls awardXP() (from xp.js) and updates the hero counter. checkBadges() called after each expansion to unlock career_explorer badge when cyberspark_careers_explored reaches 8. markPageVisited('explorer.html') called on DOMContentLoaded for 5 XP first-visit award.
+
+5. Career Path Timeline (6 nodes): Grade 9–10, Grade 11, Grade 12, Year 1, Years 2–3, First Job.
+
+6. Why This Field stats (3 cards): 3.5M unfilled jobs, #1+#2 fastest-growing, 60% remote.
+
+FILES MODIFIED:
+- /Users/dbroggy/CODE/Cyber_Back_to_School/explorer.html (286 lines inserted, 1 removed)
+
+GIT COMMIT:
+feat: build Explorer Hub with 8 career cards, timeline, stats, and XP rewards
+Commit: 511a363
+
+STATUS: COMPLETE
+Author: David Broggy
+
+---
+Date: 2026-03-19
+Task: Code Review — Task 7 Explorer Hub (Plan 2: Dark Mode, Avatars, Explorer Hub)
+SHAs reviewed: base=40fd548 head=511a363
+
+REVIEW OUTCOME: PASS WITH IMPORTANT NOTES
+
+Plan alignment: FULL. All 10 verification checklist items from the plan are implementable
+from the delivered code. No features were skipped or incorrectly deviated from.
+
+Issues found (4 total — 0 Critical, 2 Important, 2 Suggestions):
+
+IMPORTANT 1: Double markPageVisited() call
+- xp.js DOMContentLoaded auto-handler (line 275-279 of xp.js) calls markPageVisited()
+  with the current page filename automatically on every page.
+- explorer.html DOMContentLoaded also calls markPageVisited('explorer.html') explicitly.
+- markPageVisited() is idempotent (guards with visited.includes()), so XP is not
+  double-awarded. However the explicit call is redundant and causes confusion.
+- Recommendation: remove the explicit markPageVisited call from explorer.html's
+  DOMContentLoaded, since xp.js already handles it universally.
+
+IMPORTANT 2: No ARIA attributes on expand/collapse buttons
+- career-expand-btn elements have no aria-expanded attribute and the controlled
+  career-details div has no aria-labelledby or id linkage for screen readers.
+- Recommendation: add aria-expanded="false"/"true" to each button toggled in
+  _expandCareer(), and aria-controls="details-${c.id}" on the button element.
+
+SUGGESTION 1: Inline styles should move to CSS classes
+- Multiple elements use inline style="" on HTML elements and in template literals
+  (font-size, color, margin-bottom, font-family etc.). This conflicts with the
+  established pattern of CSS classes for all visual styling.
+- No functional issue, but reduces maintainability and light-mode override capability.
+
+SUGGESTION 2: _addPageXP() does not reset the hero counter on page reload
+- pageXpEarned is initialized to 0 on every page load. If a returning student has
+  already earned XP from this page in a prior session, the counter correctly shows 0
+  (they will earn no more XP). This is the intended behavior per the plan. No bug.
+  Document this design decision with a comment for future maintainers.
+
+Author: David Broggy
+
+---
+Date: 2026-03-19
+Task: FINAL CODE REVIEW — Entire Plan 2 Implementation (Dark Mode, Avatars, Explorer Hub)
+SHAs reviewed: base=09b4b7a head=e6ee7ea
+
+REVIEW OUTCOME: PASS
+
+Summary:
+- All three major features fully implemented: dark/light mode toggle, Three.js 3D avatars, Explorer Hub career page.
+- All 9 HTML pages have no-flash snippet. CSS, JS, and test changes match plan specifications.
+- Implementation includes beneficial improvements beyond the plan: GPU memory disposal pattern, AbortController for hover listeners, double-init guard, resize handler, shared IntersectionObserver, and ARIA attributes on expand buttons.
+- No critical issues found. Two minor "Important" observations (shared eyeMat mutation in Hacker avatar animation, redundant checkBadges call in explorer.html) are harmless as-is.
+- Plan compliance: 100% of the 19 checklist items verified complete.
+- Tests: 18 badges in BADGE_REGISTRY, career_explorer test present and correct.
+
+Result: PASS. Plan 2 implementation is complete and ready.
+
+Author: David Broggy
+
+---
+Date: 2026-03-19
+Task: Post-Review Fixes — Task 7 explorer.html
+
+FIXES APPLIED:
+1. Added aria-expanded="false"/"true" and aria-controls="details-${c.id}" to all career expand buttons in renderCareerCards() template literal.
+2. Toggled aria-expanded in _expandCareer() when opening and closing.
+3. Removed redundant markPageVisited('explorer.html') explicit call from DOMContentLoaded (xp.js auto-handles it).
+
+GIT COMMIT: e6ee7ea
+STATUS: COMPLETE
+Author: David Broggy
+
+---
+Date: 2026-03-19
+PLAN 2 COMPLETE — CyberSpark Dark Mode, Avatars, Explorer Hub
+
+All 7 tasks complete. Commits: c68ebd9 through e6ee7ea (13 commits total).
+
+Features delivered:
+- Dark/light mode toggle with localStorage persistence and no-flash prevention across all 9 pages
+- Three.js r128 3D persona avatars (5 characters) on home page persona picker with hover animation, mobile fallback, GPU memory management, and IntersectionObserver pause/resume
+- Full Explorer Hub career page (8 career cards, timeline, stats, XP gamification, career_explorer badge)
+- 18th badge (career_explorer) added to xp.js with test coverage
+
+Plans 3-4 pending: Hacker Lab, Builder Studio, Defender HQ, Entrepreneur Lab, Career Quiz, Achievements, About/Pitch.
+
+Author: David Broggy
