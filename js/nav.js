@@ -3,6 +3,7 @@
  *
  * Reads persona and XP from localStorage, renders nav HTML into #site-nav,
  * renders footer into #site-footer, and handles mobile hamburger toggle.
+ * Also manages dark/light theme toggle (initTheme).
  *
  * Depends on: xp.js, persona.js (loaded before this file)
  */
@@ -51,6 +52,9 @@ function renderNav() {
         <div class="xp-badge" aria-label="XP total">
           ⚡ <span id="nav-xp">${xp} XP</span>
         </div>
+        <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark/light mode">
+          <span class="theme-icon">🌙</span>
+        </button>
         ${personaHtml}
         <button class="nav-hamburger" id="nav-hamburger" aria-label="Toggle navigation" aria-expanded="false">
           <span></span><span></span><span></span>
@@ -69,11 +73,38 @@ function renderNav() {
     });
   }
 
-  // Persona chip navigation (addEventListener instead of inline onclick)
+  // Persona chip navigation
   const chip = document.getElementById('persona-chip');
   if (chip) {
     chip.addEventListener('click', () => { window.location.href = 'index.html'; });
   }
+
+  // Theme toggle — wires handler and syncs icon AFTER button is in DOM
+  initTheme();
+}
+
+function initTheme() {
+  const btn = document.getElementById('theme-toggle');
+  if (!btn) return;
+
+  const iconEl = btn.querySelector('.theme-icon');
+  const isLight = localStorage.getItem('cyberspark_theme') === 'light';
+
+  // Sync icon to current state (no-flash script already applied data-theme)
+  if (iconEl) iconEl.textContent = isLight ? '☀️' : '🌙';
+
+  btn.addEventListener('click', () => {
+    const currentlyLight = document.documentElement.getAttribute('data-theme') === 'light';
+    if (currentlyLight) {
+      document.documentElement.removeAttribute('data-theme');
+      localStorage.setItem('cyberspark_theme', 'dark');
+      if (iconEl) iconEl.textContent = '🌙';
+    } else {
+      document.documentElement.setAttribute('data-theme', 'light');
+      localStorage.setItem('cyberspark_theme', 'light');
+      if (iconEl) iconEl.textContent = '☀️';
+    }
+  });
 }
 
 function renderFooter() {
