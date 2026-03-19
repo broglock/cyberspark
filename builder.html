@@ -4,9 +4,13 @@
   <meta charset="UTF-8">
   <!-- No-flash theme: runs synchronously before CSS paint -->
   <script>
-    if (localStorage.getItem('cyberspark_theme') === 'light') {
-      document.documentElement.setAttribute('data-theme', 'light');
-    }
+    (function() {
+      var p = new URLSearchParams(location.search);
+      if (p.get('theme') === 'light') localStorage.setItem('cyberspark_theme', 'light');
+      if (localStorage.getItem('cyberspark_theme') === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
   </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>CyberSpark — Builder Studio</title>
