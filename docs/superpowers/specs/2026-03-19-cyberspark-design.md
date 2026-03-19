@@ -548,7 +548,7 @@ This page is designed to stand alone as a complete pitch document.
 
 - All user state in `localStorage` with the prefix `cyberspark_`.
 
-- Keys: `cyberspark_persona`, `cyberspark_xp`, `cyberspark_badges` (JSON array of badge IDs as strings, e.g., `["first_cipher","career_compass"]`), `cyberspark_visited` (JSON array of page filenames without path, e.g., `["explorer.html","hacker.html"]` — the 8 trackable filenames are: `explorer.html`, `hacker.html`, `builder.html`, `defender.html`, `entrepreneur.html`, `quiz.html`, `achievements.html`, `about.html`).
+- Keys: `cyberspark_persona`, `cyberspark_xp`, `cyberspark_badges` (JSON array of badge IDs as strings, e.g., `["first_cipher","career_compass"]`), `cyberspark_visited` (JSON array of page filenames without path, e.g., `["explorer.html","hacker.html"]` — the 8 trackable filenames are: `explorer.html`, `hacker.html`, `builder.html`, `defender.html`, `entrepreneur.html`, `quiz.html`, `achievements.html`, `about.html`), `cyberspark_prompts_copied` (integer, persistent count of total prompts copied — used for `prompt_explorer` and `prompt_pro` badge logic; the XP cap of 10 per session is enforced using a session-scoped variable in memory only, not stored in localStorage, so it resets on page refresh).
 
 - No cookies, no analytics, no external calls (except Google Fonts and CDN icon library).
 
