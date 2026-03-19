@@ -14,12 +14,179 @@
 <body>
   <nav id="site-nav"></nav>
   <main id="main-content">
-    <h1>Home — Coming Soon</h1>
-  </main>
+
+  <!-- Hero -->
+  <section class="hero" id="hero">
+    <div class="particles" id="particles" aria-hidden="true"></div>
+    <div class="container hero-content">
+      <span class="hero-eyebrow">Free · Open Source · No Account Needed</span>
+      <h1 class="hero-title">
+        Your future in<br><span>cybersecurity</span> starts now.
+      </h1>
+      <p class="hero-subtitle">
+        Explore careers, crack ciphers, build AI-powered businesses, and discover
+        the skills that will define the next generation of tech leaders.
+      </p>
+
+      <!-- Stat Strip -->
+      <div class="stat-strip">
+        <div class="stat-chip animate-fade-in">
+          <div class="stat-number">750K+</div>
+          <div class="stat-label">Cybersecurity jobs unfilled in the US<br><em>Source: ISC², 2024</em></div>
+        </div>
+        <div class="stat-chip animate-fade-in" style="animation-delay:100ms">
+          <div class="stat-number">$120K</div>
+          <div class="stat-label">Average cybersecurity salary<br><em>Source: BLS, 2024</em></div>
+        </div>
+        <div class="stat-chip animate-fade-in" style="animation-delay:200ms">
+          <div class="stat-number">$1.8T</div>
+          <div class="stat-label">AI market size by 2030<br><em>Source: McKinsey, 2023</em></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Persona Picker -->
+  <section class="section" id="persona-section">
+    <div class="container">
+      <div class="section-header text-center">
+        <h2>Who are you?</h2>
+        <p>Pick your persona and we'll build your personalized path.</p>
+      </div>
+      <div class="grid-3" id="persona-grid" style="margin-top:2rem">
+        <!-- Rendered by JS below -->
+      </div>
+      <p class="text-center text-muted mt-lg" style="font-size:0.85rem">
+        You can always change your persona later.
+      </p>
+    </div>
+  </section>
+
+  <!-- Section Cards -->
+  <section class="section" id="explore-section" style="padding-top:0">
+    <div class="container">
+      <div class="section-header">
+        <h2>Explore CyberSpark</h2>
+        <p>Every section is a new skill, challenge, or career opportunity.</p>
+      </div>
+      <div class="grid-3" id="section-cards" style="margin-top:1.5rem">
+        <!-- Rendered by JS below -->
+      </div>
+    </div>
+  </section>
+
+</main>
   <footer id="site-footer"></footer>
   <div id="toast-container"></div>
   <script src="js/xp.js"></script>
   <script src="js/persona.js"></script>
   <script src="js/nav.js"></script>
+  <script>
+// ── Particle hero background ─────────────────────────────────────────────────
+function initParticles() {
+  const container = document.getElementById('particles');
+  if (!container) return;
+  for (let i = 0; i < 20; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    p.style.cssText = `
+      left: ${Math.random() * 100}%;
+      top: ${Math.random() * 100}%;
+      --dx: ${(Math.random() - 0.5) * 60}px;
+      --dy: ${(Math.random() - 0.5) * 60}px;
+      --duration: ${6 + Math.random() * 8}s;
+      --delay: ${Math.random() * 4}s;
+      width: ${2 + Math.random() * 4}px;
+      height: ${2 + Math.random() * 4}px;
+      opacity: ${0.2 + Math.random() * 0.5};
+    `;
+    container.appendChild(p);
+  }
+}
+
+// ── Section cards data ───────────────────────────────────────────────────────
+const SECTIONS = [
+  { href:'explorer.html',     icon:'🔭', title:'Explorer Hub',       desc:'Map career paths, salaries, and day-in-the-life stories.' },
+  { href:'hacker.html',       icon:'💻', title:'Hacker Lab',         desc:'Crack ciphers, spot phishing, test passwords. No jail time.' },
+  { href:'builder.html',      icon:'⚙️', title:'Builder Studio',     desc:'Explore AI prompts and project ideas to build real things.' },
+  { href:'defender.html',     icon:'🛡️', title:'Defender HQ',        desc:'Respond to real-world incidents and protect the network.' },
+  { href:'entrepreneur.html', icon:'🚀', title:'AI Entrepreneur Lab', desc:'Generate AI business ideas and pitch them like a founder.' },
+  { href:'quiz.html',         icon:'🧭', title:'Career Quiz',         desc:'10 questions → your ideal cybersecurity career match.' },
+  { href:'achievements.html', icon:'🏆', title:'Achievements',        desc:'Earn XP and badges as you explore CyberSpark.' },
+  { href:'about.html',        icon:'📋', title:'About / Pitch',       desc:'School board pitch page with career data and curriculum alignment.' },
+];
+
+// ── Render persona cards ─────────────────────────────────────────────────────
+function renderPersonaCards() {
+  const grid = document.getElementById('persona-grid');
+  if (!grid) return;
+  const current = getPersona();
+  grid.innerHTML = PERSONAS.map(p => `
+    <button
+      class="card persona-card ${current && current.id === p.id ? 'selected' : ''}"
+      onclick="selectPersona('${p.id}')"
+      aria-pressed="${current && current.id === p.id}"
+      style="text-align:left; cursor:pointer;"
+    >
+      <div style="font-size:2.5rem; margin-bottom:0.75rem">${p.icon}</div>
+      <h3 style="font-size:1.25rem">${p.name}</h3>
+      <p class="text-muted mt-sm" style="font-size:0.875rem">${p.tagline}</p>
+    </button>
+  `).join('');
+}
+
+// ── Select persona handler ───────────────────────────────────────────────────
+function selectPersona(id) {
+  setPersona(id);
+  renderPersonaCards();
+  renderNav();
+  const persona = getPersona();
+  // Show welcome toast
+  const container = document.getElementById('toast-container');
+  if (container && persona) {
+    container.innerHTML = '';
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.innerHTML = `
+      <div class="toast-title">${persona.icon} Persona Selected!</div>
+      <div class="toast-body">${persona.welcomeMessage}</div>
+    `;
+    container.appendChild(toast);
+    setTimeout(() => {
+      toast.classList.add('dismissing');
+      toast.addEventListener('animationend', () => toast.remove());
+      setTimeout(() => toast.remove(), 500);
+    }, 4000);
+  }
+  // Reorder section cards to surface persona's primary sections first
+  renderSectionCards();
+}
+
+// ── Render section cards ─────────────────────────────────────────────────────
+function renderSectionCards() {
+  const grid = document.getElementById('section-cards');
+  if (!grid) return;
+  const persona = getPersona();
+  const primary = persona ? persona.primarySections : [];
+  const sorted = [
+    ...SECTIONS.filter(s => primary.includes(s.href)),
+    ...SECTIONS.filter(s => !primary.includes(s.href)),
+  ];
+  grid.innerHTML = sorted.map(s => `
+    <a href="${s.href}" class="card" style="display:block">
+      <div style="font-size:2rem; margin-bottom:0.75rem">${s.icon}</div>
+      <h3 style="font-size:1.1rem">${s.title}</h3>
+      <p class="text-muted mt-sm" style="font-size:0.875rem">${s.desc}</p>
+    </a>
+  `).join('');
+}
+
+// ── Init ─────────────────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  initParticles();
+  renderPersonaCards();
+  renderSectionCards();
+});
+  </script>
 </body>
 </html>
