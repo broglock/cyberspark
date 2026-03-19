@@ -20,12 +20,297 @@
 <body>
   <nav id="site-nav"></nav>
   <main id="main-content">
-    <h1>Explorer Hub — Coming Soon</h1>
+
+    <!-- Hero Banner -->
+    <section class="hero">
+      <div class="container hero-content">
+        <span class="hero-eyebrow">Careers · Salaries · Your Path</span>
+        <h1 class="hero-title">Explorer <span>Hub</span></h1>
+        <p class="hero-subtitle">
+          Discover the careers that will shape the future — and exactly how to get there.
+        </p>
+        <div class="stat-strip">
+          <div class="stat-chip animate-fade-in">
+            <div class="stat-number" id="xp-earned-display">0 XP</div>
+            <div class="stat-label">Earned exploring this page</div>
+          </div>
+          <div class="stat-chip animate-fade-in" style="animation-delay:100ms">
+            <div class="stat-number">8</div>
+            <div class="stat-label">Career paths to explore</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Career Cards Grid -->
+    <section class="section">
+      <div class="container">
+        <div class="section-header">
+          <h2>8 Careers That Will Define the Future</h2>
+          <p>Expand each card for a day-in-the-life and your first action step. <strong>Each card earns 10 XP.</strong></p>
+        </div>
+        <div class="grid-4" id="career-grid" style="margin-top:1.5rem">
+          <!-- Rendered by JS below -->
+        </div>
+      </div>
+    </section>
+
+    <!-- Career Path Timeline -->
+    <section class="section" style="padding-top:0">
+      <div class="container">
+        <div class="section-header">
+          <h2>Your Path: Grade 9 → First Job</h2>
+          <p>No degree required. Here's the realistic roadmap.</p>
+        </div>
+        <div class="timeline" style="margin-top:2rem; max-width:640px">
+          <div class="timeline-node">
+            <div class="timeline-year">Grade 9–10</div>
+            <div class="timeline-title">Start Exploring</div>
+            <div class="timeline-desc">Take your school's CS class. Create a free TryHackMe account. Watch YouTube channels like NetworkChuck and LiveOverflow.</div>
+          </div>
+          <div class="timeline-node">
+            <div class="timeline-year">Grade 11</div>
+            <div class="timeline-title">First Certification</div>
+            <div class="timeline-desc">CompTIA IT Fundamentals (ITF+) — free through many school voucher programs. Compete in your first CTF (Capture the Flag) contest.</div>
+          </div>
+          <div class="timeline-node">
+            <div class="timeline-year">Grade 12</div>
+            <div class="timeline-title">Build Your Portfolio</div>
+            <div class="timeline-desc">Learn Python basics on freeCodeCamp (free). Start a GitHub account and push your first project. This is your resume.</div>
+          </div>
+          <div class="timeline-node">
+            <div class="timeline-year">Year 1</div>
+            <div class="timeline-title">College / Self-Study</div>
+            <div class="timeline-desc">CompTIA Security+ certification (~$400 or employer-sponsored). Land an internship or start a bug bounty account on HackerOne.</div>
+          </div>
+          <div class="timeline-node">
+            <div class="timeline-year">Years 2–3</div>
+            <div class="timeline-title">Specialize</div>
+            <div class="timeline-desc">Pick your lane: cloud security, penetration testing, AI engineering, or forensics. Build 2–3 real projects. Contribute to open source.</div>
+          </div>
+          <div class="timeline-node">
+            <div class="timeline-year">First Job</div>
+            <div class="timeline-title">🎉 You're Hired</div>
+            <div class="timeline-desc">Junior Security Analyst or Junior AI Engineer. Starting salary: $75K–$100K. Fully remote options available from day one.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Why This Field -->
+    <section class="section" style="padding-top:0">
+      <div class="container">
+        <div class="section-header">
+          <h2>Why Cybersecurity + AI?</h2>
+        </div>
+        <div class="grid-3" style="margin-top:1.5rem">
+          <div class="card explorer-stat">
+            <div class="stat-big">3.5 Million</div>
+            <div class="stat-label" style="font-size:0.9rem;margin-top:0.5rem;color:var(--color-text)">Cybersecurity jobs unfilled globally by 2025</div>
+            <div class="stat-source">— ISC² Cybersecurity Workforce Study, 2023</div>
+          </div>
+          <div class="card explorer-stat">
+            <div class="stat-big">#1 + #2</div>
+            <div class="stat-label" style="font-size:0.9rem;margin-top:0.5rem;color:var(--color-text)">AI and cybersecurity are the fastest-growing tech careers</div>
+            <div class="stat-source">— LinkedIn Emerging Jobs Report, 2024</div>
+          </div>
+          <div class="card explorer-stat">
+            <div class="stat-big">60%</div>
+            <div class="stat-label" style="font-size:0.9rem;margin-top:0.5rem;color:var(--color-text)">Of cybersecurity roles allow full remote work</div>
+            <div class="stat-source">— Flexjobs Remote Work Report, 2023</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
   </main>
   <footer id="site-footer"></footer>
   <div id="toast-container"></div>
   <script src="js/xp.js"></script>
   <script src="js/persona.js"></script>
   <script src="js/nav.js"></script>
+  <script>
+// ── Career data ────────────────────────────────────────────────────────────────
+const CAREERS = [
+  {
+    id: 'pentester',
+    title: 'Penetration Tester',
+    salary: '$85K–$140K',
+    salaryClass: 'salary-mid',
+    desc: 'Hack systems legally. Find vulnerabilities before the bad guys do.',
+    skills: ['Networking', 'Python', 'Critical Thinking'],
+    dayInLife: 'Your morning starts with a target scope document from a client who hired you to break into their systems. You map their network, probe for open ports, and craft a phishing email to test their employees. By afternoon you\'ve found a SQL injection flaw and documented the full attack chain. You write a report that helps them fix everything before a real attacker finds it.',
+    startLink: 'https://tryhackme.com',
+    startLabel: 'Start on TryHackMe →',
+  },
+  {
+    id: 'analyst',
+    title: 'Security Analyst',
+    salary: '$75K–$115K',
+    salaryClass: 'salary-mid',
+    desc: 'Monitor, detect, and respond to real threats in real time.',
+    skills: ['SIEM', 'Incident Response', 'Communication'],
+    dayInLife: 'You monitor a Security Operations Center (SOC) dashboard that ingests 10,000 events per minute. An alert fires — unusual login patterns from a foreign IP. You investigate, correlate logs, and confirm it\'s a compromised account. You isolate the machine, reset credentials, and document the incident timeline. Your quick response stopped a data breach.',
+    startLink: 'https://www.cybrary.it',
+    startLabel: 'Start on Cybrary →',
+  },
+  {
+    id: 'ai_engineer',
+    title: 'AI / ML Engineer',
+    salary: '$110K–$175K',
+    salaryClass: 'salary-high',
+    desc: 'Build the models that power the future. Python, math, and creativity.',
+    skills: ['Python', 'Math', 'Data Science'],
+    dayInLife: 'You\'re training a model to detect malware from behavioral patterns rather than signatures. You clean a dataset of 2 million samples, tune hyperparameters, and evaluate false positive rates. After a breakthrough in precision, you deploy the model to a production pipeline where it now screens 50 million files per day — automatically.',
+    startLink: 'https://www.coursera.org/learn/machine-learning',
+    startLabel: 'Start on Coursera →',
+  },
+  {
+    id: 'forensics',
+    title: 'Digital Forensics Investigator',
+    salary: '$70K–$110K',
+    salaryClass: 'salary-mid',
+    desc: 'Recover evidence from devices. Solve digital crimes.',
+    skills: ['Evidence Analysis', 'Legal Knowledge', 'Attention to Detail'],
+    dayInLife: 'A law firm hands you a seized laptop from a fraud case. Using write-blockers to preserve evidence integrity, you clone the drive and begin forensic analysis. You recover deleted files, reconstruct browser history, and find encrypted communications. Your report becomes the key exhibit in a federal prosecution.',
+    startLink: 'https://www.sans.org/cyber-ranges/',
+    startLabel: 'Start on SANS Cyber Ranges →',
+  },
+  {
+    id: 'cloud_security',
+    title: 'Cloud Security Architect',
+    salary: '$120K–$180K',
+    salaryClass: 'salary-high',
+    desc: 'Design zero-trust infrastructure for AWS and Azure at scale.',
+    skills: ['AWS/Azure', 'Zero Trust', 'Architecture'],
+    dayInLife: 'A fintech startup needs to move to AWS without compromising SOC 2 compliance. You design the VPC network, configure IAM policies with least-privilege, set up CloudTrail logging, and build a secrets rotation system using AWS Secrets Manager. When the audit team arrives three months later, zero findings.',
+    startLink: 'https://aws.amazon.com/training/learn-about/security/',
+    startLabel: 'Start on AWS Training →',
+  },
+  {
+    id: 'ciso',
+    title: 'CISO',
+    salary: '$150K–$250K',
+    salaryClass: 'salary-high',
+    desc: 'Lead the entire security strategy for an organization.',
+    skills: ['Leadership', 'Risk Management', 'Business Strategy'],
+    dayInLife: 'You present a risk report to the board of directors: three critical vulnerabilities, remediation timelines, and projected cost of inaction. After the meeting, you approve a $2M security budget, negotiate a cyber insurance policy, and sign off on the company\'s first Zero Trust architecture roadmap. You bridge technical reality with business impact daily.',
+    startLink: 'https://www.isaca.org/credentialing/cism',
+    startLabel: 'Explore CISM Certification →',
+  },
+  {
+    id: 'devops_sec',
+    title: 'DevSecOps Engineer',
+    salary: '$100K–$155K',
+    salaryClass: 'salary-high',
+    desc: 'Embed security into every stage of the software delivery pipeline.',
+    skills: ['CI/CD', 'Docker', 'Security Testing'],
+    dayInLife: 'You\'re adding a static analysis stage to a GitHub Actions pipeline that scans every pull request for secrets and vulnerable dependencies. When a developer accidentally commits an AWS key, your pipeline blocks the merge and fires a Slack alert before it ever reaches production. You shift security left so developers catch issues in seconds, not weeks.',
+    startLink: 'https://learn.microsoft.com/en-us/training/paths/devsecops-foundations/',
+    startLabel: 'Start on Microsoft Learn →',
+  },
+  {
+    id: 'entrepreneur',
+    title: 'Cybersecurity Entrepreneur',
+    salary: '$0–$unlimited',
+    salaryClass: 'salary-high',
+    desc: 'Build the companies that protect the world. Vision + hustle.',
+    skills: ['Vision', 'Sales', 'Technical Depth'],
+    dayInLife: 'You founded a startup that uses AI to automatically detect deepfake voices in executive calls — a $50B fraud problem. Your morning is a product demo for a Fortune 500 CISO. The afternoon is a call with your Series A lead investor. By evening you\'re reviewing a new model trained on 1 million synthetic audio samples. The market doesn\'t exist yet — you\'re building it.',
+    startLink: 'https://www.ycombinator.com/library',
+    startLabel: 'Explore Y Combinator Library →',
+  },
+];
+
+// ── Track XP earned on this page ──────────────────────────────────────────────
+let pageXpEarned = 0;
+
+function _addPageXP(amount, reason) {
+  awardXP(amount, reason);
+  pageXpEarned += amount;
+  const el = document.getElementById('xp-earned-display');
+  if (el) el.textContent = pageXpEarned + ' XP';
+}
+
+// ── Render career cards ────────────────────────────────────────────────────────
+function renderCareerCards() {
+  const grid = document.getElementById('career-grid');
+  if (!grid) return;
+
+  grid.innerHTML = CAREERS.map(c => `
+    <div class="card career-card" id="card-${c.id}">
+      <h3 style="font-size:1rem">${c.title}</h3>
+      <div class="salary-bar ${c.salaryClass}" title="Salary range"></div>
+      <div style="font-size:0.75rem;color:var(--color-text-muted);margin-bottom:0.25rem;font-family:var(--font-mono)">${c.salary}</div>
+      <p style="font-size:0.8rem;color:var(--color-text-muted);margin-bottom:0.5rem">${c.desc}</p>
+      <div class="career-skills">
+        ${c.skills.map(s => `<span class="skill-tag">${s}</span>`).join('')}
+      </div>
+      <button class="career-expand-btn" data-career="${c.id}">
+        ▼ Explore this career (+10 XP)
+      </button>
+      <div class="career-details" id="details-${c.id}">
+        <p>${c.dayInLife}</p>
+        <a href="${c.startLink}" target="_blank" rel="noopener" class="start-today-btn" data-career="${c.id}">
+          ${c.startLabel}
+        </a>
+      </div>
+    </div>
+  `).join('');
+
+  // Expand buttons
+  document.querySelectorAll('.career-expand-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const id = btn.dataset.career;
+      _expandCareer(id, btn);
+    });
+  });
+
+  // "How to start today" buttons — award 5 XP on click
+  document.querySelectorAll('.start-today-btn').forEach(link => {
+    link.addEventListener('click', () => {
+      const key = 'cyberspark_start_' + link.dataset.career;
+      if (!localStorage.getItem(key)) {
+        localStorage.setItem(key, '1');
+        _addPageXP(5, 'how_to_start');
+      }
+    });
+  });
+}
+
+function _expandCareer(id, btn) {
+  const details = document.getElementById('details-' + id);
+  if (!details) return;
+
+  const isOpen = details.classList.contains('open');
+  if (isOpen) {
+    details.classList.remove('open');
+    btn.textContent = '▼ Explore this career (+10 XP)';
+    return;
+  }
+
+  details.classList.add('open');
+  btn.textContent = '▲ Close';
+
+  // Award XP first time this career is expanded
+  const key = 'cyberspark_career_explored_' + id;
+  if (!localStorage.getItem(key)) {
+    localStorage.setItem(key, '1');
+    _addPageXP(10, 'career_expand');
+
+    // Increment career_explorer counter
+    let count = parseInt(localStorage.getItem('cyberspark_careers_explored') || '0', 10);
+    count += 1;
+    localStorage.setItem('cyberspark_careers_explored', String(count));
+    checkBadges();
+  }
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  markPageVisited('explorer.html'); // awards 5 XP on first visit (handled by xp.js)
+  renderCareerCards();
+});
+  </script>
 </body>
 </html>
