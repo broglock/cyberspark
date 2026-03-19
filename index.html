@@ -59,7 +59,7 @@
         <h2>Who are you?</h2>
         <p>Pick your persona and we'll build your personalized path.</p>
       </div>
-      <div class="grid-3" id="persona-grid" style="margin-top:2rem">
+      <div class="persona-grid" id="persona-grid" style="margin-top:2rem">
         <!-- Rendered by JS below -->
       </div>
       <p class="text-center text-muted mt-lg" style="font-size:0.85rem">
@@ -84,6 +84,8 @@
 </main>
   <footer id="site-footer"></footer>
   <div id="toast-container"></div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="js/avatars.js"></script>
   <script src="js/xp.js"></script>
   <script src="js/persona.js"></script>
   <script src="js/nav.js"></script>
@@ -127,16 +129,21 @@ function renderPersonaCards() {
   const grid = document.getElementById('persona-grid');
   if (!grid) return;
   const current = getPersona();
+  const isMobile = window.innerWidth < 640;
   grid.innerHTML = PERSONAS.map(p => `
     <button
       class="card persona-card ${current && current.id === p.id ? 'selected' : ''}"
       onclick="selectPersona('${p.id}')"
+      data-persona-id="${p.id}"
       aria-pressed="${current && current.id === p.id}"
-      style="text-align:left; cursor:pointer;"
+      style="text-align:center; cursor:pointer; padding-top:var(--space-md);"
     >
-      <div style="font-size:2.5rem; margin-bottom:0.75rem">${p.icon}</div>
-      <h3 style="font-size:1.25rem">${p.name}</h3>
-      <p class="text-muted mt-sm" style="font-size:0.875rem">${p.tagline}</p>
+      ${isMobile
+        ? `<div class="avatar-emoji-fallback" style="display:block;font-size:3rem;margin-bottom:0.75rem">${p.icon}</div>`
+        : `<canvas class="avatar-canvas" data-persona="${p.id}" width="160" height="160" aria-hidden="true"></canvas>`
+      }
+      <h3 style="font-size:1.1rem">${p.name}</h3>
+      <p class="text-muted mt-sm" style="font-size:0.8rem">${p.tagline}</p>
     </button>
   `).join('');
 }
@@ -145,6 +152,10 @@ function renderPersonaCards() {
 function selectPersona(id) {
   setPersona(id);
   renderPersonaCards();
+  if (typeof initAvatars === 'function') {
+    if (typeof disposeAvatars === 'function') disposeAvatars();
+    initAvatars();
+  }
   renderNav();
   const persona = getPersona();
   // Show welcome toast
@@ -199,6 +210,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initParticles();
   renderPersonaCards();
   renderSectionCards();
+  if (typeof initAvatars === 'function') initAvatars();
 });
   </script>
 </body>
