@@ -147,10 +147,17 @@ function selectPersona(id) {
     container.innerHTML = '';
     const toast = document.createElement('div');
     toast.className = 'toast';
-    toast.innerHTML = `
-      <div class="toast-title">${persona.icon} Persona Selected!</div>
-      <div class="toast-body">${persona.welcomeMessage}</div>
-    `;
+
+    const toastTitle = document.createElement('div');
+    toastTitle.className = 'toast-title';
+    toastTitle.textContent = `${persona.icon} Persona Selected!`;
+
+    const toastBody = document.createElement('div');
+    toastBody.className = 'toast-body';
+    toastBody.textContent = persona.welcomeMessage;
+
+    toast.appendChild(toastTitle);
+    toast.appendChild(toastBody);
     container.appendChild(toast);
     setTimeout(() => {
       toast.classList.add('dismissing');

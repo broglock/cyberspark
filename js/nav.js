@@ -36,7 +36,7 @@ function renderNav() {
   ).join('');
 
   const personaHtml = persona
-    ? `<span class="persona-chip" id="persona-chip" title="Change persona" onclick="window.location.href='index.html'">
+    ? `<span class="persona-chip" id="persona-chip" title="Change persona">
          ${persona.icon} ${persona.name}
        </span>`
     : `<a href="index.html" class="btn btn-outline btn-sm">Pick Persona</a>`;
@@ -67,6 +67,12 @@ function renderNav() {
       const isOpen = navLinks.classList.toggle('open');
       hamburger.setAttribute('aria-expanded', isOpen);
     });
+  }
+
+  // Persona chip navigation (addEventListener instead of inline onclick)
+  const chip = document.getElementById('persona-chip');
+  if (chip) {
+    chip.addEventListener('click', () => { window.location.href = 'index.html'; });
   }
 }
 

@@ -2,12 +2,15 @@
  * xp.js — XP award system and badge registry for CyberSpark.
  *
  * Public API:
- *   awardXP(amount, reason)  — adds XP, checks badges, updates nav display
- *   getXP()                  — returns current XP total (number)
- *   getBadges()              — returns array of earned badge IDs
- *   hasBadge(id)             — returns true if badge is earned
- *   checkBadges()            — evaluates all badges, unlocks any newly met
- *   BADGE_REGISTRY           — array of all badge definitions
+ *   awardXP(amount, reason)        — adds XP, checks badges, updates nav display
+ *   awardPromptCopyXP()            — awards prompt-copy XP with 10-per-session cap
+ *   getXP()                        — returns current XP total (number)
+ *   getBadges()                    — returns array of earned badge IDs
+ *   hasBadge(id)                   — returns true if badge is earned
+ *   checkBadges()                  — evaluates all badges, unlocks any newly met
+ *   markPageVisited(filename)      — call on each page load to track visits and award XP
+ *   BADGE_REGISTRY                 — array of all badge definitions
+ *   XP_AWARDS                      — XP values for each action type
  */
 
 // ── XP Award Table (from spec) ──────────────────────────────────────────────
@@ -31,6 +34,8 @@ const XP_AWARDS = {
 
 // In-memory session cap for prompt copies (resets on page refresh)
 let sessionPromptsCopied = 0;
+// Re-entrancy guard for checkBadges (prevents cascading badge grant loops)
+let _checkingBadges = false;
 
 // ── Public XP functions ──────────────────────────────────────────────────────
 function getXP() {
@@ -38,7 +43,10 @@ function getXP() {
 }
 
 function awardXP(amount, reason) {
-  if (!amount || amount <= 0 || isNaN(amount)) return;
+  if (!amount || amount <= 0 || isNaN(amount)) {
+    if (amount !== 0) console.warn(`[CyberSpark] awardXP called with invalid amount: ${amount} (reason: ${reason})`);
+    return;
+  }
   const newTotal = getXP() + amount;
   localStorage.setItem('cyberspark_xp', String(newTotal));
   _updateNavXP(newTotal);
@@ -76,11 +84,17 @@ function _grantBadge(badge) {
 }
 
 function checkBadges() {
-  const state = _buildState();
-  for (const badge of BADGE_REGISTRY) {
-    if (!hasBadge(badge.id) && badge.unlockFn(state)) {
-      _grantBadge(badge);
+  if (_checkingBadges) return;
+  _checkingBadges = true;
+  try {
+    const state = _buildState();
+    for (const badge of BADGE_REGISTRY) {
+      if (!hasBadge(badge.id) && badge.unlockFn(state)) {
+        _grantBadge(badge);
+      }
     }
+  } finally {
+    _checkingBadges = false;
   }
 }
 
@@ -231,10 +245,17 @@ function _showBadgeToast(badge) {
   if (!container) return;
   const toast = document.createElement('div');
   toast.className = 'toast badge-pulse';
-  toast.innerHTML = `
-    <div class="toast-title">${badge.icon} Badge Unlocked!</div>
-    <div class="toast-body">${badge.name} — ${badge.description}</div>
-  `;
+
+  const title = document.createElement('div');
+  title.className = 'toast-title';
+  title.textContent = `${badge.icon} Badge Unlocked!`;
+
+  const body = document.createElement('div');
+  body.className = 'toast-body';
+  body.textContent = `${badge.name} — ${badge.description}`;
+
+  toast.appendChild(title);
+  toast.appendChild(body);
   container.appendChild(toast);
   setTimeout(() => {
     toast.classList.add('dismissing');
