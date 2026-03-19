@@ -255,7 +255,7 @@ Each badge is defined as an object in `xp.js` with `id`, `name`, `icon`, `descri
 
 - Instead, the feature is scoped as a **teacher demo tool**: the teacher's browser accumulates XP entries as students take turns on one device (e.g., a projector laptop).
 
-- A teacher clicks "Start Class Session" on the Achievements page. Each student enters their first name (no account needed). Their XP earned during that session is stored under `cyberspark_session_[name]` in `localStorage`.
+- A teacher clicks "Start Class Session" on the Achievements page. Each student enters their first name (no account needed). Their XP earned during that session is stored under `cyberspark_session_[name]` in `localStorage`. If a student enters a name already present in the session, the UI warns "That name is already taken — try adding a number (e.g., Alex2)" and does not proceed until a unique name is entered.
 
 - At the end of the period, the teacher clicks "Show Leaderboard" to display a ranked list of session XP on screen.
 
@@ -385,13 +385,43 @@ Each badge is defined as an object in `xp.js` with `id`, `name`, `icon`, `descri
 
 - 10 questions about interests and strengths (no wrong answers, no prior knowledge required).
 
-- Maps to 8 careers using a weighted scoring algorithm.
+- Maps to 8 careers using a weighted scoring algorithm implemented in `quiz.js`.
 
 - Result card shows: career title, salary range, day-in-the-life paragraph, top 3 skills needed, and "How to start today".
 
 - Result is screenshot-optimized with a shareable card layout.
 
 - Awards XP and a badge on completion.
+
+#### The 8 Careers
+
+| Career ID | Title | Salary Range |
+|---|---|---|
+| `pentester` | Penetration Tester | $85K–$140K |
+| `analyst` | Security Analyst | $75K–$115K |
+| `ai_engineer` | AI / ML Engineer | $110K–$175K |
+| `forensics` | Digital Forensics Investigator | $70K–$110K |
+| `cloud_security` | Cloud Security Architect | $120K–$180K |
+| `ciso` | Chief Information Security Officer | $150K–$250K |
+| `devops_sec` | DevSecOps Engineer | $100K–$155K |
+| `entrepreneur` | Cybersecurity Entrepreneur | $0–$unlimited |
+
+#### Quiz Questions and Scoring Weights
+
+Each answer option awards points to one or more career IDs. The career with the highest total score wins.
+
+| Q# | Question | Answer Options → Career Points |
+|---|---|---|
+| 1 | What sounds most fun? | Break into systems (legally) → pentester +3; Build AI tools → ai_engineer +3; Protect a company → analyst +2, ciso +1; Start a business → entrepreneur +3 |
+| 2 | Which sounds like you? | I love puzzles → pentester +2, forensics +2; I love building → ai_engineer +2, devops_sec +2; I love leading → ciso +3; I love inventing → entrepreneur +3 |
+| 3 | Pick a superpower | See through lies → forensics +3, analyst +2; Move super fast → devops_sec +3; Predict the future → ai_engineer +3; Protect everyone → ciso +2, analyst +1 |
+| 4 | Dream work environment | Startup → entrepreneur +3; Big tech company → ai_engineer +2, cloud_security +2; Government/military → forensics +3; My own schedule → entrepreneur +2, pentester +1 |
+| 5 | Which subject do you like most? | Math/Statistics → ai_engineer +3; Computer Science → devops_sec +2, pentester +2; Business → entrepreneur +3, ciso +2; Law/Ethics → forensics +2, ciso +2 |
+| 6 | Someone hacks your school — what do you do? | Find how they got in → pentester +3, forensics +2; Fix the vulnerability fast → devops_sec +3; Tell the principal and make a plan → ciso +3; Write a news article about it → analyst +2, entrepreneur +1 |
+| 7 | What kind of challenge energizes you? | Competing against others → pentester +3; Solving mysteries → forensics +3; Designing systems → cloud_security +3, devops_sec +2; Pitching ideas → entrepreneur +3 |
+| 8 | Ideal project | Train an AI to detect fraud → ai_engineer +3, analyst +2; Audit a company's security → pentester +3; Build a security product and sell it → entrepreneur +3; Design a zero-trust cloud → cloud_security +3 |
+| 9 | How do you prefer to work? | Alone, deep focus → pentester +2, forensics +2; In a team → devops_sec +2, analyst +2; As a leader → ciso +3; As a founder → entrepreneur +3 |
+| 10 | What's your end goal? | Be the best at what I do → pentester +3, ai_engineer +2; Keep people safe → ciso +2, analyst +2; Build something that lasts → entrepreneur +3; Solve crimes → forensics +3 |
 
 ### 7.8 Achievements (`/achievements.html`)
 
@@ -518,7 +548,7 @@ This page is designed to stand alone as a complete pitch document.
 
 - All user state in `localStorage` with the prefix `cyberspark_`.
 
-- Keys: `cyberspark_persona`, `cyberspark_xp`, `cyberspark_badges` (JSON array), `cyberspark_visited` (JSON array of page names).
+- Keys: `cyberspark_persona`, `cyberspark_xp`, `cyberspark_badges` (JSON array of badge IDs as strings, e.g., `["first_cipher","career_compass"]`), `cyberspark_visited` (JSON array of page filenames without path, e.g., `["explorer.html","hacker.html"]` — the 8 trackable filenames are: `explorer.html`, `hacker.html`, `builder.html`, `defender.html`, `entrepreneur.html`, `quiz.html`, `achievements.html`, `about.html`).
 
 - No cookies, no analytics, no external calls (except Google Fonts and CDN icon library).
 
