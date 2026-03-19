@@ -399,7 +399,7 @@
   font-weight: 600;
   color: var(--color-text-muted);
   cursor: pointer;
-  transition: all var(--transition);
+  transition: border-color var(--transition), color var(--transition);
 }
 .career-expand-btn:hover {
   border-color: var(--color-accent);
