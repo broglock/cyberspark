@@ -38,7 +38,7 @@ function getXP() {
 }
 
 function awardXP(amount, reason) {
-  if (amount <= 0) return;
+  if (!amount || amount <= 0 || isNaN(amount)) return;
   const newTotal = getXP() + amount;
   localStorage.setItem('cyberspark_xp', String(newTotal));
   _updateNavXP(newTotal);
@@ -195,7 +195,7 @@ const BADGE_REGISTRY = [
     id: 'cyber_champion', name: 'Cyber Champion', icon: '🏆',
     description: 'Earned every other badge.',
     unlockFn: s => {
-      const otherIds = BADGE_REGISTRY.slice(0, -1).map(b => b.id);
+      const otherIds = BADGE_REGISTRY.filter(b => b.id !== 'cyber_champion').map(b => b.id);
       return otherIds.every(id => s.badges.includes(id));
     },
   },
@@ -239,6 +239,7 @@ function _showBadgeToast(badge) {
   setTimeout(() => {
     toast.classList.add('dismissing');
     toast.addEventListener('animationend', () => toast.remove());
+    setTimeout(() => toast.remove(), 500); // fallback if animations disabled
   }, 4000);
 }
 
