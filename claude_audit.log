@@ -577,3 +577,45 @@ FINAL ASSESSMENT: PLAN 1 FOUNDATION COMPLETE AND VERIFIED
   - Complete git history with descriptive commits
   - Zero critical issues, zero important issues
   - Ready for Plan 2 (Hacker Lab + Defender HQ)
+
+TASK: Targeted Code Review Fixes — 5 issues from final review
+Author: David Broggy
+SESSION: 2026-03-19
+
+FILES CHANGED: js/xp.js, js/nav.js, index.html
+
+FIXES APPLIED:
+
+Fix 1 — Re-entrant checkBadges() guard (js/xp.js)
+  Added _checkingBadges boolean guard variable (initialized false).
+  Wrapped checkBadges() body in if (_checkingBadges) return / try/finally block.
+  Prevents cascading badge grant loops where _grantBadge -> awardXP -> checkBadges
+  could theoretically re-enter checkBadges before the previous loop completes.
+
+Fix 2 — console.warn for invalid awardXP amounts (js/xp.js)
+  Added console.warn inside the early-return guard of awardXP().
+  Warning fires for any invalid (non-zero) amount: negative, NaN, null, undefined.
+  Suppresses warning when amount is exactly 0 (intentional no-op call pattern).
+  Message format: [CyberSpark] awardXP called with invalid amount: X (reason: Y)
+
+Fix 3 — Replace inline onclick with addEventListener in nav.js
+  Removed onclick="window.location.href='index.html'" from persona-chip span in renderNav().
+  Added separate block after hamburger event listener that queries #persona-chip
+  and attaches click -> window.location.href = 'index.html' via addEventListener.
+  Eliminates inline event handler, consistent with CSP best practices.
+
+Fix 4 — Replace innerHTML with textContent for dynamic values (js/xp.js + index.html)
+  _showBadgeToast (js/xp.js): Replaced toast.innerHTML template literal with
+  explicit createElement('div') for toast-title and toast-body, set via textContent.
+  selectPersona toast (index.html): Same pattern — replaced toast.innerHTML with
+  toastTitle and toastBody elements set via textContent.
+  Eliminates XSS risk if badge names/descriptions or persona data contain < > & characters.
+
+Fix 5 — JSDoc Public API section updated (js/xp.js)
+  Added awardPromptCopyXP(), markPageVisited(filename), and XP_AWARDS to the
+  Public API documentation block at the top of xp.js.
+  All entries aligned with consistent spacing for readability.
+
+GIT COMMIT:
+  0cffb48 — fix: re-entrant checkBadges guard, awardXP warn, nav onclick, toast textContent, JSDoc
+  Files changed: js/xp.js (+28 lines), js/nav.js (+5 lines), index.html (+8 lines)
