@@ -120,7 +120,7 @@ function _buildState() {
   };
 }
 
-// ── Badge Registry (17 badges from spec) ─────────────────────────────────────
+// ── Badge Registry (18 badges from spec) ─────────────────────────────────────
 const BADGE_REGISTRY = [
   {
     id: 'first_cipher', name: 'First Cipher Cracked', icon: '🔓',
