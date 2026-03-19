@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>CyberSpark Tests</title>
+  <style>
+    body { font-family: monospace; background: #0f172a; color: #f8fafc; padding: 2rem; }
+    h1 { color: #3b82f6; margin-bottom: 1rem; }
+    .pass { color: #22c55e; }
+    .fail { color: #f97316; }
+    .suite { margin-top: 1.5rem; font-size: 1.1rem; font-weight: bold; }
+    #summary { margin-top: 2rem; font-size: 1.25rem; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <h1>CyberSpark Test Runner</h1>
+  <div id="results"></div>
+  <div id="summary"></div>
+  <script>
+    // Minimal test harness
+    let passed = 0, failed = 0;
+    const out = document.getElementById('results');
+    function describe(name, fn) {
+      const div = document.createElement('div');
+      div.className = 'suite';
+      div.textContent = name;
+      out.appendChild(div);
+      fn();
+    }
+    function it(name, fn) {
+      const div = document.createElement('div');
+      try {
+        fn();
+        div.className = 'pass';
+        div.textContent = '  ✓ ' + name;
+        passed++;
+      } catch(e) {
+        div.className = 'fail';
+        div.textContent = '  ✗ ' + name + ' — ' + e.message;
+        failed++;
+      }
+      out.appendChild(div);
+    }
+    function expect(val) {
+      return {
+        toBe: (expected) => {
+          if (val !== expected) throw new Error(`Expected ${JSON.stringify(expected)}, got ${JSON.stringify(val)}`);
+        },
+        toEqual: (expected) => {
+          if (JSON.stringify(val) !== JSON.stringify(expected)) throw new Error(`Expected ${JSON.stringify(expected)}, got ${JSON.stringify(val)}`);
+        },
+        toBeTruthy: () => { if (!val) throw new Error(`Expected truthy, got ${val}`); },
+        toBeFalsy: () => { if (val) throw new Error(`Expected falsy, got ${val}`); },
+        toContain: (item) => {
+          if (!val.includes(item)) throw new Error(`Expected array to contain ${JSON.stringify(item)}`);
+        },
+        toBeGreaterThan: (n) => { if (!(val > n)) throw new Error(`Expected ${val} > ${n}`); }
+      };
+    }
+    window.addEventListener('load', () => {
+      const s = document.getElementById('summary');
+      s.textContent = `${passed} passed, ${failed} failed`;
+      s.style.color = failed === 0 ? '#22c55e' : '#f97316';
+    });
+  </script>
+  <script src="../js/xp.js"></script>
+  <script src="test-xp.js"></script>
+  <script src="../js/persona.js"></script>
+  <script src="test-persona.js"></script>
+</body>
+</html>
