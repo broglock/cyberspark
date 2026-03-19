@@ -246,7 +246,7 @@ function renderCareerCards() {
       <div class="career-skills">
         ${c.skills.map(s => `<span class="skill-tag">${s}</span>`).join('')}
       </div>
-      <button class="career-expand-btn" data-career="${c.id}">
+      <button class="career-expand-btn" data-career="${c.id}" aria-expanded="false" aria-controls="details-${c.id}">
         ▼ Explore this career (+10 XP)
       </button>
       <div class="career-details" id="details-${c.id}">
@@ -285,11 +285,13 @@ function _expandCareer(id, btn) {
   const isOpen = details.classList.contains('open');
   if (isOpen) {
     details.classList.remove('open');
+    btn.setAttribute('aria-expanded', 'false');
     btn.textContent = '▼ Explore this career (+10 XP)';
     return;
   }
 
   details.classList.add('open');
+  btn.setAttribute('aria-expanded', 'true');
   btn.textContent = '▲ Close';
 
   // Award XP first time this career is expanded
@@ -308,8 +310,7 @@ function _expandCareer(id, btn) {
 
 // ── Init ──────────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
-  markPageVisited('explorer.html'); // awards 5 XP on first visit (handled by xp.js)
-  renderCareerCards();
+  renderCareerCards(); // xp.js auto-calls markPageVisited() for all pages
 });
   </script>
 </body>
