@@ -113,6 +113,12 @@
   .nav-hamburger { display: flex; }
 }
 
+/* Nav background override for light mode */
+[data-theme="light"] #site-nav {
+  background: rgba(248, 250, 252, 0.95);
+  border-bottom-color: #e2e8f0;
+}
+
 /* === Cards === */
 .card {
   background: var(--color-surface);
@@ -340,3 +346,183 @@
 }
 
 .footer-links a:hover { color: var(--color-accent); }
+
+/* === Theme Toggle Button === */
+.theme-toggle {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  padding: var(--space-xs) var(--space-sm);
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background var(--transition);
+  line-height: 1;
+}
+.theme-toggle:hover { background: var(--color-surface-2); }
+
+/* === Career Cards (Explorer Hub) === */
+.career-card { position: relative; }
+
+.career-card .salary-bar {
+  height: 6px;
+  border-radius: var(--radius-full);
+  margin: var(--space-sm) 0;
+}
+.salary-high  { background: var(--color-green); }
+.salary-mid   { background: var(--color-gold); }
+
+.career-skills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+  margin-top: var(--space-sm);
+}
+
+.skill-tag {
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  background: var(--color-surface-2);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-muted);
+}
+
+.career-expand-btn {
+  width: 100%;
+  margin-top: var(--space-md);
+  background: var(--color-surface-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: var(--space-xs) var(--space-sm);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: all var(--transition);
+}
+.career-expand-btn:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+
+.career-details {
+  display: none;
+  margin-top: var(--space-md);
+  padding-top: var(--space-md);
+  border-top: 1px solid var(--color-border);
+}
+.career-details.open { display: block; }
+
+.career-details p { font-size: 0.875rem; color: var(--color-text-muted); line-height: 1.7; }
+
+.start-today-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  margin-top: var(--space-md);
+  background: var(--color-accent);
+  color: #000;
+  padding: var(--space-xs) var(--space-md);
+  border-radius: var(--radius-sm);
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: filter var(--transition);
+}
+.start-today-btn:hover { filter: brightness(1.15); }
+
+/* === Career Timeline === */
+.timeline {
+  position: relative;
+  padding-left: 2rem;
+}
+
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 9px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--color-border);
+}
+
+.timeline-node {
+  position: relative;
+  padding-bottom: var(--space-xl);
+}
+
+.timeline-node::before {
+  content: '';
+  position: absolute;
+  left: -2rem;
+  top: 4px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--color-accent);
+  border: 3px solid var(--color-bg);
+  box-shadow: 0 0 0 2px var(--color-accent);
+}
+
+.timeline-year {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-accent);
+  margin-bottom: var(--space-xs);
+}
+
+.timeline-title {
+  font-family: var(--font-heading);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-text);
+  margin-bottom: var(--space-xs);
+}
+
+.timeline-desc {
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+}
+
+/* === Explorer Hub Stat Cards === */
+.explorer-stat {
+  padding: var(--space-xl);
+  text-align: center;
+}
+
+.explorer-stat .stat-big {
+  font-family: var(--font-heading);
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  font-weight: 700;
+  color: var(--color-accent);
+  line-height: 1.3;
+}
+
+.explorer-stat .stat-source {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  margin-top: var(--space-xs);
+}
+
+/* === Avatar Canvas === */
+.avatar-canvas {
+  display: block;
+  width: 160px;
+  height: 160px;
+  margin: 0 auto var(--space-md);
+}
+
+.avatar-emoji-fallback {
+  font-size: 3rem;
+  text-align: center;
+  margin-bottom: var(--space-md);
+  display: none;
+}
+
+@media (max-width: 640px) {
+  .avatar-canvas       { display: none; }
+  .avatar-emoji-fallback { display: block; }
+}

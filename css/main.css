@@ -48,6 +48,23 @@ body.persona-builder   { --color-accent: var(--color-purple); }
 body.persona-defender  { --color-accent: var(--color-coral); }
 body.persona-entrepreneur { --color-accent: var(--color-gold); }
 
+/* === Light Mode Overrides === */
+[data-theme="light"] {
+  --color-bg:          #f8fafc;
+  --color-surface:     #ffffff;
+  --color-surface-2:   #f1f5f9;
+  --color-border:      #e2e8f0;
+  --color-text:        #0f172a;
+  --color-text-muted:  #64748b;
+
+  /* Darkened accent variants — pass WCAG AA on white backgrounds */
+  --color-blue:        #2563eb;
+  --color-green:       #16a34a;
+  --color-gold:        #b45309;
+  --color-coral:       #c2410c;
+  --color-purple:      #7c3aed;
+}
+
 /* === Reset === */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 img, svg { display: block; max-width: 100%; }
@@ -102,6 +119,21 @@ code, pre, .mono {
 @media (max-width: 640px) {
   .grid-4, .grid-3, .grid-2 { grid-template-columns: 1fr; }
   .container { padding: 0 var(--space-md); }
+}
+
+/* Persona picker grid — 5 cards + 160px canvas height */
+.persona-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: var(--space-lg);
+}
+
+@media (max-width: 1024px) {
+  .persona-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+@media (max-width: 640px) {
+  .persona-grid { grid-template-columns: repeat(2, 1fr); }
 }
 
 /* === Utilities === */
