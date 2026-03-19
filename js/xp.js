@@ -115,6 +115,7 @@ function _buildState() {
     quizDone:       localStorage.getItem('cyberspark_quiz') === '1',
     ideaGenerated:  localStorage.getItem('cyberspark_idea') === '1',
     pitchDone:      localStorage.getItem('cyberspark_pitch') === '1',
+    careersExplored:  parseInt(localStorage.getItem('cyberspark_careers_explored') || '0', 10),
     personaChanged: localStorage.getItem('cyberspark_persona_changed') === '1',
   };
 }
@@ -204,6 +205,11 @@ const BADGE_REGISTRY = [
     id: 'cyber_600', name: 'Cyber Expert', icon: '🟣',
     description: 'Earned 600 XP.',
     unlockFn: s => s.xp >= 600,
+  },
+  {
+    id: 'career_explorer', name: 'Career Explorer', icon: '🔭',
+    description: 'Explored all 8 cybersecurity career paths.',
+    unlockFn: s => (s.careersExplored || 0) >= 8,
   },
   {
     id: 'cyber_champion', name: 'Cyber Champion', icon: '🏆',

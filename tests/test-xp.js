@@ -35,8 +35,8 @@ describe('XP System', () => {
     expect(hasBadge('first_cipher')).toBeFalsy();
   });
 
-  it('BADGE_REGISTRY contains all 17 defined badges', () => {
-    expect(BADGE_REGISTRY.length).toBe(17);
+  it('BADGE_REGISTRY contains all 18 defined badges', () => {
+    expect(BADGE_REGISTRY.length).toBe(18);
   });
 
   it('BADGE_REGISTRY badge has required fields', () => {
@@ -45,5 +45,12 @@ describe('XP System', () => {
     expect(typeof badge.name).toBe('string');
     expect(typeof badge.icon).toBe('string');
     expect(typeof badge.unlockFn).toBe('function');
+  });
+
+  it('career_explorer badge unlocks when careersExplored >= 8', () => {
+    localStorage.clear();
+    localStorage.setItem('cyberspark_careers_explored', '8');
+    checkBadges();
+    expect(hasBadge('career_explorer')).toBeTruthy();
   });
 });
