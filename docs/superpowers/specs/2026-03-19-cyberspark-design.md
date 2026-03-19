@@ -190,9 +190,30 @@ All state is stored in `localStorage`. No server is required.
 
 - Every meaningful interaction awards XP: completing a game level, finishing the quiz, generating a business idea, copying a prompt.
 
-- XP values are weighted by depth of engagement (e.g., finishing all cipher levels = more XP than completing one).
-
 - XP total is displayed persistently in the top nav.
+
+- XP is awarded via the `awardXP(amount, reason)` function in `xp.js`, which updates `cyberspark_xp` in `localStorage` and triggers badge checks.
+
+### XP Award Table
+
+| Action | XP Awarded |
+|---|---|
+| Select a persona (first time) | 10 |
+| Visit a new section page | 5 |
+| Complete Cipher Cracker — Tier 1 | 25 |
+| Complete Cipher Cracker — Tier 2 | 50 |
+| Complete Cipher Cracker — Tier 3 | 100 |
+| Complete a Phishing Spotter round (5 emails) | 40 |
+| Complete Password Strength Arena (all 3 levels) | 30 |
+| Complete Binary Decoder (both directions) | 20 |
+| Complete a Threat Scenario (Defender HQ) | 50 |
+| Complete a Security Checklist | 15 |
+| Complete Career Quiz | 60 |
+| Copy a prompt from Builder Studio | 5 (max 10 per session) |
+| Generate a business idea (Entrepreneur Lab) | 15 |
+| Fill out and copy Pitch Your Idea form | 40 |
+| Earn any badge | 25 bonus |
+| **Total possible XP** | **~700+** |
 
 ### Badge System
 
@@ -204,31 +225,43 @@ Badges are unlocked by reaching milestones. Each badge has:
 
 - A brief description shown on the Achievements page.
 
-**Example badges:**
+### Badge Registry
 
-- "First Cipher Cracked" — complete first Hacker Lab puzzle.
+Each badge is defined as an object in `xp.js` with `id`, `name`, `icon`, `description`, and `unlockFn` (a function that returns true when the badge should unlock, given the current XP state object).
 
-- "Phishing Detective" — correctly identify 5 phishing emails.
+| Badge ID | Name | Icon | Unlock Condition |
+|---|---|---|---|
+| `first_cipher` | First Cipher Cracked | 🔓 | Complete Cipher Cracker Tier 1 |
+| `cipher_master` | Cipher Master | 🧩 | Complete all 3 Cipher Cracker tiers |
+| `phishing_detective` | Phishing Detective | 🎣 | Complete one Phishing Spotter round |
+| `password_pro` | Password Pro | 🔐 | Complete all Password Strength Arena levels |
+| `binary_brain` | Binary Brain | 💾 | Complete Binary Decoder in both directions |
+| `incident_commander` | Incident Commander | 🚨 | Complete all 3 Defender HQ threat scenarios |
+| `idea_spark` | Idea Spark | 💡 | Generate first business idea |
+| `pitch_ready` | Pitch Ready | 📊 | Complete and copy Pitch Your Idea form |
+| `career_compass` | Career Compass | 🧭 | Complete Career Quiz |
+| `prompt_explorer` | Prompt Explorer | 🤖 | Copy 5 prompts from Builder Studio |
+| `prompt_pro` | AI Prompt Pro | ⚡ | Copy 10 prompts from Builder Studio |
+| `world_traveler` | World Traveler | 🗺️ | Visit all 8 non-home pages |
+| `persona_curious` | Persona Curious | 🎭 | Change persona at least once |
+| `cyber_100` | Cyber Cadet | 🌱 | Earn 100 XP total |
+| `cyber_300` | Cyber Analyst | 🔵 | Earn 300 XP total |
+| `cyber_600` | Cyber Expert | 🟣 | Earn 600 XP total |
+| `cyber_champion` | Cyber Champion | 🏆 | Earn all other badges |
 
-- "Idea Spark" — generate first business idea in Entrepreneur Lab.
+### School Leaderboard Mode (Single-Device Demo)
 
-- "Career Compass" — complete the Career Quiz.
+- `localStorage` cannot be shared across devices, so a true multi-student leaderboard is not possible without a backend.
 
-- "Full Stack Explorer" — visit all 5 persona home pages.
+- Instead, the feature is scoped as a **teacher demo tool**: the teacher's browser accumulates XP entries as students take turns on one device (e.g., a projector laptop).
 
-- "AI Prompt Pro" — copy 10 prompts from Builder Studio.
+- A teacher clicks "Start Class Session" on the Achievements page. Each student enters their first name (no account needed). Their XP earned during that session is stored under `cyberspark_session_[name]` in `localStorage`.
 
-- "Cyber Champion" — earn 1,000 XP.
+- At the end of the period, the teacher clicks "Show Leaderboard" to display a ranked list of session XP on screen.
 
-### School Leaderboard Mode (No Backend)
+- The session is cleared with a "Reset Class" button.
 
-- A teacher generates a 6-character class code (randomly generated, stored client-side).
-
-- Students enter the class code on the home page; their XP is stored under `cyberspark_xp_[classcode]` in `localStorage`.
-
-- When viewed on the same browser/device, a class ranking is shown.
-
-- This is intentionally simple — it works for a single classroom demo without any infrastructure.
+- This limitation must be documented clearly in the README so teachers set accurate expectations.
 
 ---
 
@@ -324,7 +357,29 @@ Badges are unlocked by reaching milestones. Each badge has:
 
   - *Accessibility:* Real-time sign language translator; AI reading assistant for dyslexic students.
 
-- **"Pitch Your Idea" Template:** A fillable HTML form that generates a one-page business pitch students can copy or print.
+- **"Pitch Your Idea" Template:** A fillable HTML form with the following fields:
+
+  - Business Name (text input)
+
+  - The Problem (textarea — "What problem are you solving?")
+
+  - Your Solution (textarea — "How does your AI-powered idea solve it?")
+
+  - Target Customer (text input — "Who will use this?")
+
+  - How You Make Money (select: Subscription / One-time purchase / Freemium / Ad-supported / Service fees)
+
+  - AI Tools You'd Use (checkboxes: ChatGPT, Gemini, Claude, Midjourney, Custom model, Other)
+
+  - Estimated Startup Cost (select: $0–$100 / $100–$1,000 / $1,000–$10,000 / $10,000+)
+
+  - Your "Wow" Moment (textarea — "What will make people say 'wow'?")
+
+  - On form submit (no server call), the page renders a styled, print-ready one-page pitch card below the form.
+
+  - A "Copy as Text" button copies the pitch to clipboard in plain text format.
+
+  - A "Print" button triggers `window.print()` with a print-specific CSS stylesheet that hides the nav and form, showing only the rendered pitch card.
 
 ### 7.7 Career Quiz (`/quiz.html`)
 
@@ -420,7 +475,18 @@ This page is designed to stand alone as a complete pitch document.
 
 2. **What Students Experience** — overview of all learning modules with screenshots.
 
-3. **What Students Learn** — mapped explicitly to NICE Cybersecurity Workforce Framework work categories.
+3. **What Students Learn** — mapped explicitly to NICE Cybersecurity Workforce Framework (NIST SP 800-181) work categories:
+
+| NICE Work Category | NICE Category Code | CyberSpark Module |
+|---|---|---|
+| Securely Provision | SP | Builder Studio — AI tools, project building |
+| Operate and Maintain | OM | Defender HQ — checklists, network security |
+| Oversee and Govern | OV | About page, Explorer Hub — career paths, policy |
+| Protect and Defend | PD | Defender HQ — incident response, threat scenarios |
+| Analyze | AN | Hacker Lab — cipher analysis, phishing detection |
+| Collect and Operate | CO | Hacker Lab — reconnaissance concepts, binary/data |
+| Investigate | IN | Hacker Lab — forensics framing, Hall of Fame incidents |
+| Entrepreneurship / Innovation | — | AI Entrepreneur Lab (NICE extension area) |
 
 4. **Career Outcomes** — visual bar chart of 8 careers with salary ranges (HTML/CSS chart, no library).
 
