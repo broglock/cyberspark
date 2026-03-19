@@ -2,7 +2,10 @@
   "permissions": {
     "allow": [
       "Bash(git add:*)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(head -6 /Users/dbroggy/CODE/Cyber_Back_to_School/*.html)",
+      "Bash(grep:*)",
+      "Bash(wc:*)"
     ]
   }
 }
