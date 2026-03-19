@@ -108,7 +108,7 @@ function _createBaseScene(canvas, accentHex) {
   pointLight.position.set(0, 0, 2);
   scene.add(pointLight);
 
-  return { renderer, scene, camera, pointLight, accentColor };
+  return { renderer, scene, camera };
 }
 
 // ── AVATAR 1: Explorer — Astronaut (accent: electric blue #3b82f6) ────────────
@@ -231,6 +231,7 @@ function buildHackerAvatar(canvas) {
   // Eyes
   const eyeGeo = new THREE.SphereGeometry(0.12, 8, 8);
   _disposables.push(eyeGeo);
+  // Shared material — all three emissive parts (eyes + antenna tip) glow together
   const eyeMat = new THREE.MeshStandardMaterial({ color: 0x22c55e, emissive: 0x22c55e, emissiveIntensity: 1.5 });
   _disposables.push(eyeMat);
   const eyeL = new THREE.Mesh(eyeGeo, eyeMat);
