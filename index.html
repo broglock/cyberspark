@@ -128,11 +128,15 @@ const SECTIONS = [
   { href:'about.html',        icon:'📋', title:'About / Pitch',       desc:'School board pitch page with career data and curriculum alignment.' },
 ];
 
-// ── Persona video map (3 of 5 have videos; Defender + Entrepreneur use emoji)
+// ── Persona media map
 const PERSONA_VIDEOS = {
   explorer: 'videos/The_Cyber-Galleon_Roadmap_version_1.mp4',
   hacker:   'videos/Master_the_Hacker_Lab_version_1.mp4',
   builder:  'videos/Level_Up_Your_Tech_Skills_version_1.mp4',
+};
+const PERSONA_IMAGES = {
+  defender:     'images/defender.png',
+  entrepreneur: 'images/entrepreneur.png',
 };
 
 // ── Render persona cards ─────────────────────────────────────────────────────
@@ -142,9 +146,12 @@ function renderPersonaCards() {
   const current = getPersona();
   grid.innerHTML = PERSONAS.map(p => {
     const videoSrc = PERSONA_VIDEOS[p.id];
+    const imgSrc   = PERSONA_IMAGES[p.id];
     const media = videoSrc
       ? `<video class="avatar-video" src="${videoSrc}" autoplay loop muted playsinline aria-hidden="true"></video>`
-      : `<div class="avatar-emoji-fallback">${p.icon}</div>`;
+      : imgSrc
+        ? `<img class="avatar-video" src="${imgSrc}" alt="${p.name}" loading="lazy">`
+        : `<div class="avatar-emoji-fallback">${p.icon}</div>`;
     return `
     <button
       class="card persona-card ${current && current.id === p.id ? 'selected' : ''}"
