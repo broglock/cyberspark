@@ -295,3 +295,25 @@ Features delivered:
 Plans 3-4 pending: Hacker Lab, Builder Studio, Defender HQ, Entrepreneur Lab, Career Quiz, Achievements, About/Pitch.
 
 Author: David Broggy
+
+---
+Date: 2026-03-21
+Session Summary
+
+TASKS COMPLETED:
+1. Pushed entire codebase to GitHub: https://github.com/broglock/cyberspark
+2. Added ?theme=light URL parameter support across all 9 HTML pages
+   - Direct light mode link: https://broglock.github.io/cyberspark/?theme=light
+3. Replaced Three.js persona avatars with MP4 videos (Explorer, Hacker, Builder)
+   and PNG images (Defender, Entrepreneur)
+   - Videos moved to videos/ directory
+   - Images moved to images/ directory
+4. Drafted school division outreach email (Winnipeg — Colleen/Shelley)
+
+KNOWN TECH DEBT:
+- defender.png is 8.2MB — compress before school pitch
+
+NEXT SESSION:
+- Plans 3-4: Hacker Lab, Builder Studio, Defender HQ, Entrepreneur Lab, Career Quiz, Achievements, About/Pitch
+
+Author: David Broggy
